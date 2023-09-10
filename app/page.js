@@ -1,11 +1,11 @@
-import HelloWorldServer from "@/components/HelloWorldServer"
-import HelloWorldClient from "@/components/HelloWorldClient"
+import Search from "@/components/Search"
+import MusicPlayer from "@/components/MusicPlayer"
 
 export default function Home() {
   return (
     <main>
-      <HelloWorldServer/>
-      <HelloWorldClient/>
+      <Search/>
+      <MusicPlayer/>
     </main>
   )
 }
