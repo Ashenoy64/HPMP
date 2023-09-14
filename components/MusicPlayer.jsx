@@ -100,8 +100,16 @@ export default class MusicPlayer extends React.Component {
             </div>
           </div>
           <div className="w-2/4">{this.musicController.render()}</div>
-          <div className="hidden sm:block">
-              <input type="range" className="" min="0" max="1" step="0.1"  onChange={(e)=>this.changeVolume(e)} id="" />
+          <div className="flex flex-row gap-4 my-auto">
+            <div className="w-6 h-6 my-auto">
+                <img src="/info.png" alt="" className="w-6 h-6 my-auto" />
+            </div>
+          <div className="flex flex-row my-auto" >
+              <div className="w-8 h-8">
+                <img src="/volume.png" className="w-8 h-8" alt="" />
+              </div>
+              <input type="range" className="hidden sm:block" min="0" max="1" step="0.1"  onChange={(e)=>this.changeVolume(e)} id="" />
+          </div>
           </div>
         </div>
       </div>
