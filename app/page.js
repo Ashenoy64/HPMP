@@ -1,16 +1,14 @@
 import Search from "@/components/Search"
 import MusicPlayer from "@/components/MusicPlayer"
-import Card from "@/components/Card"
-
+import Playlist from "@/components/Playlist"
+import RecentlyPlayed from "@/components/RecentlyPlayed"
 
 export default function Home() {
   return (
     <main>
       <Search/>
-      <div className="grid grid-cols-4 gap-2">
-          <Card/>
-          <Card/>
-      </div>
+      <RecentlyPlayed/>
+      <Playlist/>
       <MusicPlayer/>
     </main>
   )
