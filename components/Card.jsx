@@ -4,11 +4,15 @@ import React from "react";
 export default class Card extends React.Component {
   render() {
     return (
-      <div className="flex flex-col bg-yellow-600  rounded-lg bg-[url('/music.jpg')] bg-no-repeat bg-cover w-32  h-32 mx-auto">
-        <div className="flex flex-row-reverse mx-2">
-          <img src="/info.png" alt="" className=" w-6 h-6" />
+      <div className="flex flex-col  bg-neutral-800  rounded-lg w-40 h-56 transition-shadow hover:shadow-white hover:shadow-sm ">
+        <div className="w-32 h-32 object-contain m-auto">
+            <img src="/music.jpg" alt="" className="w-32 h-32" />
         </div>
-        <div className="text-center my-auto">Music Name</div>
+        <div className="w-32 m-auto over">
+            <p className="font-semibold">Music Name</p>
+            <p className="text-xs">Author Name</p>
+        </div>
+        
       </div>
     );
   }

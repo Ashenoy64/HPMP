@@ -5,17 +5,15 @@ import Card from "./Card";
 export default function Playlist() {
   return (
     
-      <div className="w-full">
-        <span className=" font-bold text-xl text-orange-100 relative lg:left-12">
-          Playlist
-        </span>
-        <div className="grid grid-cols-2 justify-center sm:justify-evenly sm:grid-cols-4 p-4 w-full md:w-4/5 bg-slate-800 rounded-lg h-44 overflow-y-auto gap-y-12 mx-auto no-scrollbar">
+      <div className="flex flex-col justify-center">
+        <div className="flex flex-col p-4">
+          <span className="font-bold text-lg">Playlist</span>
+        </div>
+        <div className="grid grid-flow-col justify-start  w-full md:mx-8  gap-4  rounded-lg h-64 no-scrollbar overflow-x-auto">
           <Card />
           <Card />
           <Card />
           <Card />
-          <Card />
-          
         </div>  
       </div>
     
