@@ -27,18 +27,3 @@ export default function Modal({ isOpen, onClose, data }) {
 }
 
 
-// {this.state.isModalOpen && (
-//     <ProjectModal
-//       isOpen={this.state.isModalOpen}
-//       onClose={this.closeModal}
-//       project={this.state.selectedProject}
-//     />
-//   )}
-
-// closeModal = () => {
-//     this.setState({
-//       isModalOpen: false,
-//       selectedProject: null,
-//       autoplay: true,
-//     });
-//   };
