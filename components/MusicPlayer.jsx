@@ -34,7 +34,7 @@ class MusicController extends React.Component {
 
   handleSeekTo = (time) => {
     if (this.audioRef.current) {
-      this.audioRef.current.currentTime = time;
+      this.audioRef.current.currentTime += time;
     }
   }
 
