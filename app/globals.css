@@ -41,3 +41,31 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+@keyframes slide-text {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-slide-text {
+  animation: slide-text 3s linear infinite;
+  background-clip: text;
+  color: transparent;
+  display: inline;
+}
+
+@keyframes blink {
+  0%, 100% {
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    text-shadow: 0 0 24px rgba(255, 255, 255, 1);
+  }
+}
+
+.shadow-blink {
+  animation: blink 1s infinite ease-in-out;
+}
