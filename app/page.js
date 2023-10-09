@@ -14,9 +14,16 @@ export default async function Home() {
   return (
     <main>
       <Modal/>
-      <div>
-      <Search/><AuthButton></AuthButton>
+      
+
+      <div className="flex flex-row ">
+
+      <Search/><AuthButton/>
+      
       </div>
+      
+      
+      
       <RecentlyPlayed/>
       <Playlist/>
       <MusicPlayer/>

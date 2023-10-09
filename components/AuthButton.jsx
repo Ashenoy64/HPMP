@@ -9,16 +9,16 @@ export default function AuthButton(){
 
     if (session){
         return(
-            <>
-                {session.user.name}<br/>
+            <div className="flex flex-col justify-center">
+                {session.user.name}
                 <button onClick={()=>signOut()}>Sign Out</button>
-            </>
+            </div>
         )
     }
 
     return(
-        <div>
-            Not Signed In<br/>
+        <div className="flex flex-col jsutify-center">
+            Not Signed In
             <button onClick={()=>signIn()}>Sign in</button>
         </div>
     )
