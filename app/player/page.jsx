@@ -5,7 +5,7 @@ import RecentlyPlayed from "@/components/RecentlyPlayed"
 import Modal from "@/components/ModalViewer"
 import AuthButton from "@/components/AuthButton"
 
-
+import {auth} from "@/app/firebase"
 
 
 
