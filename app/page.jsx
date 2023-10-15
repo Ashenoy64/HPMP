@@ -28,8 +28,10 @@ export default async function Home() {
             <Search/>
           </div>
         </div>
+        <div className="h-screen">
         <RecentlyPlayed />
         <Playlist />
+        </div>
         <MusicPlayer />
       </main>
     )
