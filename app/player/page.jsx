@@ -5,7 +5,7 @@ import RecentlyPlayed from "@/components/RecentlyPlayed"
 import Modal from "@/components/ModalViewer"
 import AuthButton from "@/components/AuthButton"
 
-
+import {auth} from "@/app/firebase"
 
 
 
@@ -26,10 +26,8 @@ export default async function Home() {
             <Search/>
           </div>
         </div>
-        <div className="h-screen">
         <RecentlyPlayed />
         <Playlist />
-        </div>
         <MusicPlayer />
       </main>
     )
