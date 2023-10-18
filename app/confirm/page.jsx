@@ -4,7 +4,10 @@ import { useState } from 'react'
 import {auth} from "@/app/firebase"
 import {isSignInWithEmailLink,signInWithEmailLink} from "firebase/auth"
 import {redirect} from "next/navigation"
-import { UserAuth } from '../context/AuthContext'
+import { UserAuth } from '../../lib/AuthContext'
+
+
+
 export default function confirm(){
     const [email,setEmail]=useState("")
     const [notice,setNotice]=useState("")
