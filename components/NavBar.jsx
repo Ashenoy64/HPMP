@@ -1,8 +1,10 @@
 "use client";
 
+import Search from "./Search";
 import { UserAuth ,emailSignIn , logOut} from "@/lib/AuthContext";
 
-export default function AuthButton() {
+
+export default function NavBar() {
   
   const {user}=UserAuth()
   
@@ -14,9 +16,9 @@ export default function AuthButton() {
             HPMP
           </span>
         </div>
-        <div>
-          
-        </div>
+        <div className="flex flex-row justify-center h-screen w-full">
+            <Search/>
+</div>
         <div className="flex flex-row gap-4">
             <div className="font-semibold text-lg">
                 {user}
@@ -29,3 +31,5 @@ export default function AuthButton() {
     );
   
 }
+
+
