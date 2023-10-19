@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import SearchResult from "./SearchResult";
+import SearchResult from "./DisplayHandler";
 
 
 export default function Search() {
