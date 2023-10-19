@@ -10,6 +10,7 @@ export default function confirm() {
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState("");
   const user = UserAuth();
+
   const callSignInWithEmailLink = async (e) => {
     e.preventDefault();
 
@@ -18,6 +19,7 @@ export default function confirm() {
         .then(() => {
           console.log("signed in");
           console.log(auth.currentUser.email);
+          console.log(auth.currentUser)
           setNotice("welcome ", auth.currentUser.email);
         })
         .catch((error) => {

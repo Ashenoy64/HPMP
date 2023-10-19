@@ -3,21 +3,33 @@ import Playlist from "@/components/Playlist";
 import RecentlyPlayed from "@/components/RecentlyPlayed";
 import Modal from "@/components/ModalViewer";
 import NavBar from "@/components/NavBar";
+import DisplayHandler from "@/components/DisplayHandler";
 
 // import {auth} from "@/lib/firebase"
 
+
+
+
+
 export default async function Home() {
+
+  
   return (
     <main>
       <Modal />
-      <div className="flex flex-col w-full justify-center gap-8 ">
-        <div className="flex flex-row w-full">
-          <NavBar />
-        </div>
-      </div>
-      <RecentlyPlayed />
-      <Playlist />
       <MusicPlayer />
+      
+      <NavBar />
+      <DisplayHandler/>
+      
     </main>
   );
 }
+
+
+//  {
+//   searchActive? <SearchResult/>: <div>
+//   <RecentlyPlayed />
+//   <Playlist />
+//   </div>
+// }
