@@ -52,12 +52,13 @@ export default function Search() {
     else{
         setResults([])
     }
+    _searchDisplay.handleSearch(results,true)
   }, []);
 
   const onClick = useCallback((event) => {
     if (searchRef.current && !searchRef.current.contains(event.target)) {
       setActive(false)
-      _searchDisplay.handleSearch([[]],false)
+      //_searchDisplay.handleSearch([[]],false)
       window.removeEventListener("click",onClick)
       setResults([])
       setQuery("")
@@ -67,7 +68,7 @@ export default function Search() {
   const onFocus = useCallback(() => {
     setActive(true);
     _searchDisplay.handleSearch(results,true)
-    window.addEventListener("click", onClick);
+  
   }, []);
 
   return (
@@ -76,7 +77,7 @@ export default function Search() {
         <div className="bg-slate-100 mx-auto flex flex-row  outline-10  w-1/2 h-8 rounded-lg overflow-hidden items-center">
           <input
             onChange={onChange}
-            onFocus={onFocus}
+            onFocus={()=>{onFocus()}}
             value={query}
             ref={searchRef}
             type="text"

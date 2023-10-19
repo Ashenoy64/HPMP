@@ -29,16 +29,26 @@ function SearchComp({ name, img }) {
 
 
 
-function SearchResult({result})
+function SearchResult({result,onSearchClose})
 {
-
-  return(<div
-        className={`grid grid-cols-0  grid-flow-row md:grid-cols-3 lg:grid-cols-4 mx-auto md:w-11/12  gap-2  overflow-y-auto no-scrollbar h-screen`}
-      >
+  
+  return(
+  <div className="flex flex-col justify-center gap-4">
+    <div className="flex flex-row justify-between ">
+       <div className="text-xl font-bold">
+          Search Result
+       </div>
+       <button className="object-contain w-8 h-8" onClick={()=>onSearchClose()}>
+          <img src="/x.png" alt=""  className="w-8 h-8"/>
+       </button>
+    </div>
+  <div
+        className={`grid grid-cols-0  grid-flow-row md:grid-cols-3 lg:grid-cols-4 mx-auto md:w-11/12  gap-2  overflow-y-auto no-scrollbar h-screen`}>
         {result.length > 0 &&
           Object.keys(result[0]).map((k) => {
             return <SearchComp key={k} name={result[0][k]["name"]} />;
           })}
+      </div>
       </div>)
 }
 
@@ -58,16 +68,18 @@ export default class DisplayHandler extends React.Component {
   handleSearch=(result,activity)=>
   { 
     this.setState({active:activity,result:result})
-    console.log(this.state.result[0])
   }
 
+  onSearchClose=()=>{
+    this.setState({active:false})
+  }
 
 
   render() {
 
     return (
-      <div className="my-16">
-        {this.state.active ? (<SearchResult result={this.state.result}/>
+      <div className="my-16 p-2">
+        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose}/>
         ) : (
           <div>
             <RecentlyPlayed />
