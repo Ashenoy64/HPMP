@@ -3,7 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import {auth} from "@/app/firebase"
 import {isSignInWithEmailLink,signInWithEmailLink} from "firebase/auth"
-import {redirect} from "next/navigation"
+
 import { UserAuth } from '../context/AuthContext'
 export default function confirm(){
     const [email,setEmail]=useState("")
@@ -18,6 +18,7 @@ export default function confirm(){
                 console.log("signed in")
                 console.log(auth.currentUser.email)
                 setNotice("welcome ",auth.currentUser.email)
+                redirect("/player")
 
             })
             .catch((error)=>{
