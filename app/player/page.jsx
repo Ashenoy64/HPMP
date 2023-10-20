@@ -1,6 +1,4 @@
 import MusicPlayer from "@/components/MusicPlayer";
-import Playlist from "@/components/Playlist";
-import RecentlyPlayed from "@/components/RecentlyPlayed";
 import Modal from "@/components/ModalViewer";
 import NavBar from "@/components/NavBar";
 import DisplayHandler from "@/components/DisplayHandler";
@@ -38,9 +36,3 @@ export default async function Home() {
 
 
 
-//  {
-//   searchActive? <SearchResult/>: <div>
-//   <RecentlyPlayed />
-//   <Playlist />
-//   </div>
-// }
