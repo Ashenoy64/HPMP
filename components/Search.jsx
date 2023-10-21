@@ -11,8 +11,7 @@ export default function Search() {
 
   const _searchDisplay = new SearchResult
 
-  //Debug
-  // const [active,setActive]=useState(true)
+  
   const [results, setResults] = useState([
     [
       { name: "Avanish" },
@@ -39,7 +38,7 @@ export default function Search() {
   //End
 
   const [active, setActive] = useState(true);
-  //const [results,setResults]=useState([[]])
+
 
   const onChange = useCallback((event) => {
     const query=event.target.value
@@ -58,12 +57,11 @@ export default function Search() {
   const onClick = useCallback((event) => {
     if (searchRef.current && !searchRef.current.contains(event.target)) {
       setActive(false)
-      //_searchDisplay.handleSearch([[]],false)
       window.removeEventListener("click",onClick)
       setResults([])
       setQuery("")
     }
-  }, []);
+  },[]);
 
   const onFocus = useCallback(() => {
     setActive(true);
