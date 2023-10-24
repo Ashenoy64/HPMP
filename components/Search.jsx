@@ -38,7 +38,8 @@ export default function Search() {
   //End
 
   const [active, setActive] = useState(true);
-
+  const [filter,setFilter] = useState('Songs')
+  const [dropDown,setDropDown] = useState(false)
 
   const onChange = useCallback((event) => {
     const query=event.target.value
@@ -63,16 +64,37 @@ export default function Search() {
     }
   },[]);
 
+  
   const onFocus = useCallback(() => {
     setActive(true);
     _searchDisplay.handleSearch(results,true)
   
   }, []);
+  const handleDropDown=()=>{
+    console.log("Test")
+    setDropDown(!dropDown)
+  }
+  const setDropDownOption=(option)=>{
+      setFilter(option)
+  }
 
   return (
     <div className="mx-auto md:relative left-16  w-full ">
-      <div className="mx-auto flex flex-col justify-center w-full text-white gap-12">
-        <div className="bg-slate-100 mx-auto flex flex-row  outline-10  w-1/2 h-8 rounded-lg overflow-hidden items-center">
+      <div className="mx-auto flex flex-col justify-between w-3/4 text-white gap-12">
+        <div className=" mx-auto flex flex-row justify-between  outline-10 object-contain bg-white  w-full h-8 rounded-lg overflow-hidden items-center">
+          <div className=" w-24 text-black p-1  border-r-2 bg-slate-300">
+            <button className="w-full" onClick={()=>handleDropDown()}>
+              <span>{filter}</span>
+            </button>
+            <div className={`absolute text-white font-semibold rounded bg-neutral-700 p-2 ${dropDown?"block":"hidden"}`}>
+                <ul >
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Songs')}}>Songs</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Album')}}>Album</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Podcast')}}>Podcast</li>
+                  <li  className=" cursor-pointer" onClick={()=>{setDropDownOption('Playlist')}}>Playlist</li>
+                </ul>
+            </div>
+          </div>
           <input
             onChange={onChange}
             onFocus={()=>{onFocus()}}
@@ -80,15 +102,13 @@ export default function Search() {
             ref={searchRef}
             type="text"
             name="name"
-            className="text-black bg-slate-100 w-full p-3 outline-0 "
+            className="text-black w-full md:w-full bg-slate-100 p-3 outline-0 "
             placeholder="Search"
           />
-          <button type="submit" className="w-8">
-            <img src="/search.png" alt="" className="bg-slate-100  w-8 p-2" />
+          <button type="submit" className=" object-contain w-12 sm:w-8 rounded-r">
+            <img src="/search.png" alt="" className="bg-slate-100  w-12 sm:w-8  " />
           </button>
         </div>
-
-        
       </div>
     </div>
   );

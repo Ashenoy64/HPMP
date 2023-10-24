@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import { useRef, useState } from "react";
-import { UserAuth } from "../lib/AuthContext";
+import { UserAuth } from "@/lib/AuthContext";
 import { auth } from "@/lib/firebase";
 import { sendSignInLinkToEmail } from "firebase/auth";
+
 export default function landing() {
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState("");
