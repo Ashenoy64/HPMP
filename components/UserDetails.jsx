@@ -5,7 +5,7 @@ import React from "react";
 
 export default function UserDetails({toggle}) {
   return (
-  <div className="flex justify-center flex-col w-64 gap-2 bg-white rounded-lg shadow-[0_0_30px_4px]">
+  <div className="flex justify-center flex-col w-64 gap-2 bg-neutral-800  rounded-lg shadow-[0_0_30px_7px_rgba(_38,_38,_38,_0.7)] ">
         <div className="object-contain w-full rounded-lg">
                 <img src="/music.jpg" alt=""  className="rounded-lg w-full" />
         </div>
