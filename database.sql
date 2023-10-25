@@ -225,34 +225,31 @@ CREATE PROCEDURE UpdateRecentlyPlayed(
 BEGIN
     DECLARE track_order INT;
 
-    -- Check if the track is already in recently_played
+
     SELECT `order` INTO track_order
     FROM recently_played
     WHERE user_id = user_id AND track_id = track_id;
 
     IF track_order IS NOT NULL THEN
-        -- The track is already in recently_played, set its order to 1
+
         UPDATE recently_played
         SET `order` = 1
         WHERE user_id = user_id AND track_id = track_id;
 
-        -- Update the order for other tracks
+
         UPDATE recently_played
         SET `order` = `order` + 1
         WHERE user_id = user_id AND track_id <> track_id AND `order`<track_order;
     ELSE
-        -- The track is not in recently_played, insert with order 1
+
         INSERT INTO recently_played (user_id, track_id, `order`)
         VALUES (user_id, track_id, 1);
 
-        -- Update the order for other tracks
+
         UPDATE recently_played
         SET `order` = `order` + 1
         WHERE user_id = user_id;
 
-        -- Remove excess tracks (if more than 10)
-        DELETE FROM recently_played
-        WHERE user_id = user_id AND `order` > 10;
     END IF;
 END $$
 
@@ -261,6 +258,29 @@ DELIMITER ;
 
 -------------------------------------
 -- Triggers
+DELIMITER $$
+
+CREATE TRIGGER EnsureMax10Tracks
+AFTER INSERT ON recently_played
+FOR EACH ROW
+BEGIN
+    DECLARE track_count INT;
+    
+
+    SELECT COUNT(*) INTO track_count
+    FROM recently_played
+    WHERE user_id = NEW.user_id;
+    
+
+    IF track_count > 10 THEN
+        DELETE FROM recently_played
+        WHERE user_id = NEW.user_id AND `order`>10;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
 
 
 
