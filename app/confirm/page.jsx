@@ -4,21 +4,17 @@ import { useState } from "react";
 import { auth } from "@/lib/firebase";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { UserAuth } from "@/lib/AuthContext";
+
 
 export default function confirm() {
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState("");
   const [noticeActive, setNoticeActive] = useState(false);
-  const {setUserMail, LoginStatus,setLoginStatus} = UserAuth();
+  
   const router=useRouter()
 
 
-  useEffect(()=>{
-    if (LoginStatus=="Done"){
-        router.push("/player")
-    }
-  })
+  
 
 
 
@@ -28,26 +24,29 @@ export default function confirm() {
 
     if (isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
-        .then(() => {
+        .then((result) => {
           
           
-          setUserMail(auth.currentUser.email)
-          setLoginStatus("Done");
-          setNotice("welcome ", auth.currentUser.email);
+         console.log(result.user)
+         
+          setNotice(result.user.email);
           setNoticeActive(true);
-
+          
           setTimeout(() => {
             setNoticeActive(false);
           }, 3000);
+          router.push("/player")
         })
         .catch((error) => {
           console.log(error);
           setNotice("An error occured during sign in: ", error.name);
           setNoticeActive(true);
 
+
           setTimeout(() => {
             setNoticeActive(false);
-          }, 3000);
+          }, 5000);
+          router.push("/")
         });
     }
   };

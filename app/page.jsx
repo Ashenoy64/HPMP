@@ -1,28 +1,30 @@
 "use client";
 import React, { useEffect } from "react";
 import { useRef, useState } from "react";
-import { UserAuth } from "../lib/AuthContext";
+
 import { auth } from "@/lib/firebase";
-import { sendSignInLinkToEmail,isSignInWithEmailLink } from "firebase/auth";
+import { sendSignInLinkToEmail,isSignInWithEmailLink,onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 export default function landing() {
-  const [email, setEmail] = useState("");
+  
   const [notice, setNotice] = useState("");
   const router=useRouter()
   const [noticeActive, setNoticeActive] = useState(false);
-
+  const [email,setEmail]=useState("")
   const actionCodeSettings = {
     url: "http://localhost:3000/confirm",
     handleCodeInApp: true,
   };
-  const { LoginStatus,setLoginStatus } = UserAuth();
-
+  
   useEffect(()=>{
-    console.log(LoginStatus)
-    if (LoginStatus=="Done"){
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
         router.push("/player")
-    }
-  })
+        // ...
+      } 
+    }); 
+  },[])
+  
 
   //Send login link
   const handleSubmit = (event) => {
@@ -33,10 +35,7 @@ export default function landing() {
         setNotice(
           "An email was sent to your email address. Click the link in the email to login."
         );
-        setLoginStatus("Confirm")
-        console.log(LoginStatus)
         setNoticeActive(true)
-
         setTimeout(()=>{
           setNoticeActive(false)
         },3000)
@@ -52,7 +51,7 @@ export default function landing() {
 
         setTimeout(()=>{
           setNoticeActive(false)
-        },3000)
+        },9000)
       });
   };
 
