@@ -1,14 +1,26 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
-
+import SongPlaylist from "./SongsToPlaylist";
 
 let _intance = null;
 
 function SearchComp({ name, img }) {
+  const [isModalOpen,setModalOpen] =  useState(false);
+    
+  function handleModalClose() {
+      setModalOpen(false);
+    }
+
+    function handleModalOpen()
+    {
+      setModalOpen(true)
+    }
+
     return (
       <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2">
+        {isModalOpen && <SongPlaylist onClose={handleModalClose}></SongPlaylist> }
         <div className="flex flex-row gap-4">
           <div className="object-contain">
             <img src="/music.jpg" className="w-12 h-12" alt="" />
@@ -18,7 +30,10 @@ function SearchComp({ name, img }) {
             <span className="text-sm">Autor</span>
           </div>
         </div>
-        <div className="flex flex-row items-center h-full ">
+        <div className="flex flex-row items-center h-full gap-3">
+          <button className="object-contain w-4 h-4" onClick={handleModalOpen}>
+            <img src="/plus.png" className="w-4 h-4" alt="" />
+          </button>
           <button className="object-contain w-4 h-4">
             <img src="/play.png" className="w-4 h-4" alt="" />
           </button>

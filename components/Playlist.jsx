@@ -19,18 +19,18 @@ export default function Playlist() {
   }
 
   function handleMakePlaylistOpen() {
-    setModal(true);
+    setMakePlaylistModal(true);
   }
 
   function handleMakePlaylistClose() {
-    setModal(false);
+    setMakePlaylistModal(false);
   }
 
   return (
     <div className="flex flex-col justify-center">
       {isMakePlaylistOpen && (
         <MakePlaylistModal
-          isOpen={isModalOpen}
+          isOpen={isMakePlaylistOpen}
           onClose={handleMakePlaylistClose}
         />
       )}

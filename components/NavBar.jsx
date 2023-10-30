@@ -4,7 +4,14 @@ import Search from "./Search";
 import { useEffect, useState } from "react";
 import {auth} from "@/lib/firebase"
 import { signOut,onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 export default function NavBar() {
+  const router = useRouter();
+
+  const handleRoute = (path) => {
+    router.push(path);
+  };
+
   const [user,setUser]=useState("")
   useEffect(()=>{
     onAuthStateChanged(auth, (user) => {
@@ -23,7 +30,7 @@ export default function NavBar() {
   
 
   return (
-    <div className="flex flex-row w-full justify-between p-2">
+    <div className="flex flex-row w-full justify-between p-2 ">
       <div className="text-xl font-bold relative inline-block">
         <span className="bg-gradient-to-r from-orange-500 to-green-500 text-transparent bg-clip-text animate-slide-text shadow-blink">
           HPMP
@@ -32,25 +39,31 @@ export default function NavBar() {
       <div className="flex flex-row justify-center w-full">
         <Search />
       </div>
-      <div >
+      <div>
         <div className="hidden md:flex space-x-6">
           <div className="font-semibold text-lg text-white"> {user.email}</div>
+          <button
+            onClick={() => {
+              handleRoute("/user");
+            }}
+            className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
+          >
+            Profile
+          </button>
 
-          <div className="">
-            <button
-              onClick={async () => {
+          <button
+            onClick={async () => {
                 signOut(auth).then(()=>{
-                  console.log("signed out")
+                console.log("signed out")
                 }).catch((error)=>{
                   console.log(error)
                 })
                 
-              }}
-              className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
-            >
-              Sign Out
-            </button>
-          </div>
+            }}
+            className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
+          >
+            Sign Out
+          </button>
         </div>
 
         {/* Mobile Menu Icon */}
@@ -96,9 +109,16 @@ export default function NavBar() {
         {/* Mobile Nav Links */}
         {isMobileMenuOpen && (
           <div className="md:hidden top-16 right-0 left-0 z-10">
-            <div className="">
+            <div className=" flex flex-col gap-2 p-2">
               <div className="font-semibold text-lg">{user.email}</div>
-
+              <button
+                onClick={() => {
+                  handleRoute("/user");
+                }}
+                className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
+              >
+                Profile
+              </button>
               <div className="">
                 <button
                  onClick={async () => {
@@ -121,5 +141,3 @@ export default function NavBar() {
     </div>
   );
 }
-
-
