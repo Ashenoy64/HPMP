@@ -1,10 +1,10 @@
 "use client";
 
 import Search from "./Search";
-import { useState } from "react";
-import { UserAuth, emailSignIn, logOut } from "@/lib/AuthContext";
+import { useEffect, useState } from "react";
+import {auth} from "@/lib/firebase"
+import { signOut,onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-
 export default function NavBar() {
   const router = useRouter();
 
@@ -12,12 +12,22 @@ export default function NavBar() {
     router.push(path);
   };
 
-  const { user } = UserAuth();
+  const [user,setUser]=useState("")
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user)
+        setUser(user)
+        // ...
+      } 
+    });
+  },[])
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prevState) => !prevState);
   };
+  
 
   return (
     <div className="flex flex-row w-full justify-between p-2 ">
@@ -31,7 +41,7 @@ export default function NavBar() {
       </div>
       <div>
         <div className="hidden md:flex space-x-6">
-          <div className="font-semibold text-lg">Avanish {user}</div>
+          <div className="font-semibold text-lg text-white"> {user.email}</div>
           <button
             onClick={() => {
               handleRoute("/user");
@@ -42,8 +52,13 @@ export default function NavBar() {
           </button>
 
           <button
-            onClick={() => {
-              console.log("signedout");
+            onClick={async () => {
+                signOut(auth).then(()=>{
+                console.log("signed out")
+                }).catch((error)=>{
+                  console.log(error)
+                })
+                
             }}
             className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
           >
@@ -95,7 +110,7 @@ export default function NavBar() {
         {isMobileMenuOpen && (
           <div className="md:hidden top-16 right-0 left-0 z-10">
             <div className=" flex flex-col gap-2 p-2">
-              <div className="font-semibold text-lg">Avanish {user}</div>
+              <div className="font-semibold text-lg">{user.email}</div>
               <button
                 onClick={() => {
                   handleRoute("/user");
@@ -106,9 +121,14 @@ export default function NavBar() {
               </button>
               <div className="">
                 <button
-                  onClick={() => {
-                    console.log("signedout");
-                  }}
+                 onClick={async () => {
+                  signOut(auth).then(()=>{
+                    console.log("signed out")
+                  }).catch((error)=>{
+                    console.log(error)
+                  })
+                  
+                }}
                   className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
                 >
                   Sign Out

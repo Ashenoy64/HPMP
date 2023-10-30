@@ -34,3 +34,7 @@ pat
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#misc
+*.code-workspace
+fire

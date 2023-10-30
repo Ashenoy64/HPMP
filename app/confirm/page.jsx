@@ -1,45 +1,58 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
-import { redirect } from "next/navigation";
-import { UserAuth } from "../../lib/AuthContext";
+import { useRouter } from "next/navigation";
+
 
 export default function confirm() {
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState("");
   const [noticeActive, setNoticeActive] = useState(false);
-  const user = UserAuth();
+  
+  const router=useRouter()
 
+
+  
+
+
+
+//   Handle confirmation here
   const callSignInWithEmailLink = async (e) => {
     e.preventDefault();
 
     if (isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
-        .then(() => {
-          console.log("signed in");
-          console.log(auth.currentUser.email);
-          console.log(auth.currentUser);
-          setNotice("welcome ", auth.currentUser.email);
+        .then((result) => {
+          
+          
+         console.log(result.user)
+         
+          setNotice(result.user.email);
           setNoticeActive(true);
-
+          
           setTimeout(() => {
             setNoticeActive(false);
           }, 3000);
+          router.push("/player")
         })
         .catch((error) => {
           console.log(error);
           setNotice("An error occured during sign in: ", error.name);
           setNoticeActive(true);
 
+
           setTimeout(() => {
             setNoticeActive(false);
-          }, 3000);
+          }, 5000);
+          router.push("/")
         });
     }
   };
 
+
+//    return the GUI
   return (
     <div className=" flex flex-col items-center justify-center h-screen">
       <div
@@ -70,5 +83,7 @@ export default function confirm() {
         </button>
       </form>
     </div>
+    
+    
   );
 }

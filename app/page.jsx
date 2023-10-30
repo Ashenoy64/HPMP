@@ -1,22 +1,33 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef, useState } from "react";
-import { UserAuth } from "@/lib/AuthContext";
+
 import { auth } from "@/lib/firebase";
-import { sendSignInLinkToEmail } from "firebase/auth";
+import { sendSignInLinkToEmail,isSignInWithEmailLink,onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export default function landing() {
-  const [email, setEmail] = useState("");
+  
   const [notice, setNotice] = useState("");
+  const router=useRouter()
   const [noticeActive, setNoticeActive] = useState(false);
-
+  const [email,setEmail]=useState("")
   const actionCodeSettings = {
     url: "http://localhost:3000/confirm",
     handleCodeInApp: true,
   };
+  
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.push("/player")
+        // ...
+      } 
+    }); 
+  },[])
+  
 
-  const { user } = UserAuth();
-
+  //Send login link
   const handleSubmit = (event) => {
     event.preventDefault();
     
@@ -26,7 +37,6 @@ export default function landing() {
           "An email was sent to your email address. Click the link in the email to login."
         );
         setNoticeActive(true)
-
         setTimeout(()=>{
           setNoticeActive(false)
         },3000)
@@ -42,7 +52,7 @@ export default function landing() {
 
         setTimeout(()=>{
           setNoticeActive(false)
-        },3000)
+        },9000)
       });
   };
 
@@ -64,5 +74,7 @@ export default function landing() {
         <button type="submit" className="p-2 rounded-md bg-slate-600 font-bold">Submit</button>
       </form>
     </div>
-  );
-}
+  );  
+  }
+
+
