@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
+import { GetSong } from "@/lib/utilites";
 class MusicController extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.audioRef = React.createRef();
     this.progressRef = React.createRef();
     this.state = {
@@ -22,6 +22,17 @@ class MusicController extends React.Component {
       this.handleTimeUpdate
     );
   };
+
+  handlePlaySong=async (id)=>{
+      try{
+        const res = await(GetSong(id))
+      }
+      catch(error)
+      {
+        console.log(error)
+      }
+  }
+
 
   handleTimeUpdate = () => {
     if (this.audioRef.current) {
@@ -48,9 +59,19 @@ class MusicController extends React.Component {
 
   handleMusicSource = (source) => {
     if (this.audioRef && source) {
-      this.audioRef.current.src = source;
-      this.setState({ isPlaying: true });
-      this.audioRef.current.play();
+      if (source instanceof Blob) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.audioRef.current.src = reader.result;
+          this.audioRef.current.play();
+          this.setState({ isPlaying: true });
+        };
+        reader.readAsDataURL(source);
+      } else {
+        this.audioRef.current.src = source;
+        this.audioRef.current.play();
+        this.setState({ isPlaying: true });
+      }
     }
   };
 
@@ -111,10 +132,10 @@ class MusicController extends React.Component {
 let instance = null;
 
 export default class MusicPlayer extends React.Component {
-  constructor() {
+  constructor(props) {
     if (instance != null) return instance;
 
-    super();
+    super(props);
     instance = this;
     this.musicController = React.createRef();
 

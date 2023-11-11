@@ -36,7 +36,6 @@ CREATE TABLE recently_played (
 
 
 -- PLAYLIST
-
 CREATE TABLE playlist (
     playlist_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255),
@@ -48,7 +47,6 @@ CREATE TABLE playlist (
 
 
 -- USER PLAYLIST
-
 CREATE TABLE user_playlist (
     playlist_id INT,
     user_id INT,
@@ -219,41 +217,39 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE UpdateRecentlyPlayed(
-    IN user_id INT,
-    IN track_id INT
+    IN uid INT,
+    IN tid INT
 )
 BEGIN
     DECLARE track_order INT;
 
-
     SELECT `order` INTO track_order
     FROM recently_played
-    WHERE user_id = user_id AND track_id = track_id;
+    WHERE user_id = uid AND track_id = tid LIMIT 1;
 
     IF track_order IS NOT NULL THEN
-
         UPDATE recently_played
         SET `order` = 1
-        WHERE user_id = user_id AND track_id = track_id;
-
+        WHERE user_id = uid AND track_id = tid;
 
         UPDATE recently_played
         SET `order` = `order` + 1
-        WHERE user_id = user_id AND track_id <> track_id AND `order`<track_order;
+        WHERE user_id = uid AND track_id <> tid AND `order`<track_order;
     ELSE
-
         INSERT INTO recently_played (user_id, track_id, `order`)
-        VALUES (user_id, track_id, 1);
-
+        VALUES (uid, tid, 1);
 
         UPDATE recently_played
         SET `order` = `order` + 1
-        WHERE user_id = user_id;
+        WHERE user_id = uid and track_id!=tid;
 
+        DELETE FROM recently_played
+        WHERE user_id = uid AND `order` > 10;
     END IF;
 END $$
 
 DELIMITER ;
+
 
 
 -------------------------------------

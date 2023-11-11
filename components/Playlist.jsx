@@ -1,14 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 import PlaylistDetails from "./PlaylistDetails";
-
+import { GetAllPlaylist } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
 
-export default function Playlist() {
+export default function Playlist({user,uid}) {
   const [isMakePlaylistOpen, setMakePlaylistModal] = useState(false);
-
+  const [data,setData] = useState(null)
   const [isModalOpen, setModal] = useState(false);
+
+  useEffect(()=>{
+    const Playlist = async()=>{
+
+      try{
+        const _data = await GetAllPlaylist(uid)
+        console.log(_data,'this')
+        setData(_data)
+      }
+      catch(error)
+      {
+        console.log(error)
+      }
+
+    }
+    Playlist()
+  },[uid])
+
 
   function handleModalOpen() {
     setModal(true);
@@ -54,10 +72,7 @@ export default function Playlist() {
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
         {/* Use onClick to open the modal */}
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
+        
       </div>
     </div>
   );

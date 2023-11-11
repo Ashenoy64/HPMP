@@ -4,7 +4,7 @@ import { useState } from "react";
 import { auth } from "@/lib/firebase";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useRouter } from "next/navigation";
-
+import { User,StoreLocal } from "@/lib/utilites";
 
 export default function confirm() {
   const [email, setEmail] = useState("");
@@ -35,6 +35,20 @@ export default function confirm() {
           setTimeout(() => {
             setNoticeActive(false);
           }, 3000);
+          
+          try{
+            const email = result.user.email
+            const res =  User(email.split('@')[0],email)
+            if(res.result!="error")
+            {
+              StoreLocal(email,res.result)
+            } 
+          }catch(error)
+          {
+            console.log(error)
+            console.log("There is a problem in axios")
+          }
+
           router.push("/player")
         })
         .catch((error) => {

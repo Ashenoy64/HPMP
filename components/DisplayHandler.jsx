@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
 import SongPlaylist from "./SongsToPlaylist";
-
+import ImageComponent from "./Image";
 let _intance = null;
 
-function SearchComp({ name, img }) {
+function SearchComp({ primary,secondary, imgBlob }) {
   const [isModalOpen,setModalOpen] =  useState(false);
     
   function handleModalClose() {
@@ -23,11 +23,11 @@ function SearchComp({ name, img }) {
         {isModalOpen && <SongPlaylist onClose={handleModalClose}></SongPlaylist> }
         <div className="flex flex-row gap-4">
           <div className="object-contain">
-            <img src="/music.jpg" className="w-12 h-12" alt="" />
+            <ImageComponent blob={imgBlob} height={48} width={48} />
           </div>
           <div className="flex flex-col">
-            <span className="text-md">{name}</span>
-            <span className="text-sm">Autor</span>
+            <span className="text-md">{primary}</span>
+            <span className="text-sm">{secondary}</span>
           </div>
         </div>
         <div className="flex flex-row items-center h-full gap-3">
@@ -44,7 +44,7 @@ function SearchComp({ name, img }) {
 
 
 
-function SearchResult({result,onSearchClose})
+function SearchResult({result,onSearchClose,user,id})
 {
   
   return(
@@ -68,14 +68,14 @@ function SearchResult({result,onSearchClose})
 }
 
 export default class DisplayHandler extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     if (_intance != null) {
       return _intance;
     }
     this.state={
         active:false,
-        result:[[]]
+        result:[[]],
     }
     _intance = this;
   }
@@ -94,11 +94,11 @@ export default class DisplayHandler extends React.Component {
 
     return (
       <div className="my-16 p-2">
-        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose}/>
+        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose} user={this.user} id={this.id}/>
         ) : (
           <div>
-            <RecentlyPlayed />
-            <Playlist />
+            <RecentlyPlayed  uid={1} />
+            <Playlist  uid={1} />
           </div>
         )}
       </div>
