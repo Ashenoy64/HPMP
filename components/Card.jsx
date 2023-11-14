@@ -43,7 +43,7 @@ export function RecentlyPlayedCard({imageBlob,primary,secondary,onClick,uid,type
 }
 
 
-export function PlaylistCard({imageBlob,primary,secondary,onClick,uid,id,k}){
+export function PlaylistCard({imageBlob,primary,secondary,onClick,uid,id,k,owner,deleteHandler}){
   
   return (
       <div
@@ -57,13 +57,16 @@ export function PlaylistCard({imageBlob,primary,secondary,onClick,uid,id,k}){
           <p className="font-semibold capitalize">{primary}</p>
           <p className="text-xs">{secondary}</p>
         </div>
+        {
+          owner && <button className="p-2 rounded w-3/4 mx-auto my-2  bg-red-400 text-center" onClick={(e)=>{e.stopPropagation();deleteHandler(k)}}>Delete</button>
+        }
       </div>
     );
 }
 
 
 
-export function PodcastCard({imageBlob,primary,secondary,onClick,uid,type,id}){
+export function PodcastCard({imageBlob,primary,secondary,onClick,uid,type,id,deleteHandler}){
   
   return (
       <div
@@ -78,6 +81,7 @@ export function PodcastCard({imageBlob,primary,secondary,onClick,uid,type,id}){
           <p className="font-semibold">{primary}</p>
           <p className="text-xs">{secondary}</p>
         </div>
+       <button className="p-2 rounded w-3/4 mx-auto my-2  bg-red-400 text-center" onClick={(e)=>{e.stopPropagation();deleteHandler(k)}}>Delete</button>
       </div>
     );
 }

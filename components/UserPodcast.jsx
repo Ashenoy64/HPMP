@@ -29,6 +29,10 @@ export default function UserPodcast({details}) {
     }
   },[details])
 
+
+  const DeletePodcast=async(k)=>{
+
+  }
   
 
   
@@ -41,7 +45,7 @@ export default function UserPodcast({details}) {
       </div>
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
         {/* Use onClick to open the modal */}
-        { data && data.map((val,ind)=><PodcastCard key={ind} onClick={handleModalOpen} />)}
+        { data && data.map((val,ind)=><PodcastCard key={ind} onClick={handleModalOpen} deleteHandler={DeletePodcast} />)}
       </div>
     </div>
   );

@@ -11,11 +11,12 @@ export default function UserDetails({ toggle, details }) {
     const GetUserData = async (uid) => {
       try {
         const _data = await GetUserDetails(uid);
-        if(_data.profile_image!=null && imgSrc!=null)
+        if(_data.profile_image!=null )
         {
+          setSrc(`data:image/jpeg;base64,${_data.profile_image}`)
         }
         else{
-          setSrc('/music.jpg')
+          setSrc('/profile.jpg')
         }
         setData(_data)
       } catch (error) {

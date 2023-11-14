@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useContext, createContext } from "react";
 import { GetLocal, SetRecentlyPlayed } from "@/lib/utilites";
 import { GetSong } from "@/lib/utilites";
+import Loading from "@/components/Loading";
 
 const UserContext = createContext();
 
@@ -54,8 +55,9 @@ export default function Home() {
         // const blob = new Blob([_data.value],{type:"audio/mp3"})
         // const url = URL.createObjectURL(blob)
         // await setAudioBlob(`data:audio/mp3;base64,${_data.audio_blob}`)
-        setAudioBlob(_data.audio_url);
-        await UpdateRecentlyPlayed(trackID, userID);
+        // setAudioBlob(_data.audio_url);
+        setAudioBlob(_data.audio_blob)
+        // await UpdateRecentlyPlayed(trackID, userID);
       } catch (error) {
         console.log(error);
       }
@@ -115,6 +117,13 @@ export default function Home() {
         </main>
       </UserContext.Provider>
     );
+  }
+  else{
+    return(
+      <div className="w-full h-screen flex flex-col justify-center items-center">
+        <Loading/>
+      </div>
+    )
   }
 }
 

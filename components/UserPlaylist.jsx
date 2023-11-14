@@ -38,6 +38,9 @@ export default function UserPlaylist({details}) {
   function handleModalClose() {
     setModal(false);
   }
+  const DeletePlaylist=async(k)=>{
+
+  }
 
  
 
@@ -56,7 +59,7 @@ export default function UserPlaylist({details}) {
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
         {/* Use onClick to open the modal */}
         {data  && data.map((val,ind)=>{
-          return <PlaylistCard onClick={handleModalOpen} key={ind} primary={val.name} imageBlob={val.image_blob} secondary={val.doc} k={ind} id={val.playlist_id} uid={val.owner_id}  />
+          return <PlaylistCard onClick={handleModalOpen} key={ind} primary={val.name} imageBlob={val.image_blob} secondary={val.doc} k={ind} id={val.playlist_id} uid={val.owner_id}  owner={true} deleteHandler={DeletePlaylist}  />
         })}
       </div>
     </div>
@@ -65,11 +68,19 @@ export default function UserPlaylist({details}) {
 
 
 function PlaylistSong({ details }) {
+  const [imageSrc,setSrc] = useState()
+
+  useEffect(()=>{
+      if(details.image) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
+      else if(details.image_url) setSrc(details.image_url)
+      else setSrc('/music.jpg')
+    
+  },[details])
   return (
     <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2">
       <div className="flex flex-row gap-4">
         <div className="object-contain">
-          <img src="/music.jpg" className="w-12 h-12" alt="" />
+          <img src={imageSrc} className="w-12 h-12" alt="" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm">{details.name}</span>
@@ -95,6 +106,8 @@ function PlaylistDetails({  onClose,details }) {
     FetchData()
   },[details])
 
+ 
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 h-full">
       <div className="bg-gray-800 text-white p-6 rounded-lg max-w-3xl z-10 relative">
@@ -107,9 +120,9 @@ function PlaylistDetails({  onClose,details }) {
             
           </div>
           <hr />
-          <div className="grid grid-cols-1 gap-2 overflow-y-scroll no-scrollbar h-96">
+          <div className="flex flex-col gap-1 overflow-y-scroll no-scrollbar h-96">
             { data && data.map((val,k) =>{
-              return <PlaylistSong details={val} key={k} />
+              return <PlaylistSong details={val} key={k}   />
             })}
           </div>
           <button

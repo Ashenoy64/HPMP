@@ -1,17 +1,29 @@
 "use client";
 import React,{useState,useEffect} from "react";
 import { GetPlaylistInfo } from "@/lib/utilites";
+import { User } from "@/app/player/page";
+
+
 
 function PlaylistSong({ details }) {
+  const [imageSrc,setSrc] = useState()
+  const {SongHandler} = User()
+
+  useEffect(()=>{
+    console.log(details)
+    if(details.image_blob) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
+      else if(details.image_url) setSrc(details.image_url)
+      else setSrc('/music.jpg')
+  },[details])
   return (
-    <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2">
+    <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2 cursor-pointer hover:shadow-[0_0_2px_1px_rgba(_255,_255,_255,_0.7)]" onClick={()=>{SongHandler(details.name,details.username,details.image_blob,details.track_id)}} >
       <div className="flex flex-row gap-4">
         <div className="object-contain">
-          <img src="/music.jpg" className="w-12 h-12" alt="" />
+          <img src={imageSrc} className="w-12 h-12" alt="" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm">{details.name}</span>
-          <span className="text-xs">{details.author}</span>
+          <span className="text-xs">{details.artist_name}</span>
         </div>
       </div>
     </div>
@@ -45,7 +57,7 @@ export default function PlaylistDetails({  onClose,details }) {
             
           </div>
           <hr />
-          <div className="grid grid-cols-1 gap-2 overflow-y-scroll no-scrollbar h-96">
+          <div className="flex flex-col gap-3 overflow-y-scroll no-scrollbar h-96">
             { data && data.map((val,k) =>{
               return <PlaylistSong details={val} key={k} />
             })}

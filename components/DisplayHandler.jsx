@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
-import Viewer from "./SongsToPlaylist";
+import {ViewerPlaylist,ViewerSong,ViewerAlbum} from "./SongsToPlaylist";
 import ImageComponent from "./Image";
 import { SearchRequest } from "@/lib/utilites";
-
+import { User } from "@/app/player/page";
 let _intance = null;
 
 function extractTestValue(inputString) {
@@ -21,7 +21,7 @@ function extractTestValue(inputString) {
 
 function SearchComp({ details,type }) {
   const [isModalOpen,setModalOpen] =  useState(false);
-  
+  const {SongHandler} =  User()
   function handleModalClose() {
       setModalOpen(false);
     }
@@ -33,7 +33,9 @@ function SearchComp({ details,type }) {
 
     return (
       <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2">
-        { isModalOpen && (type=='playlist' || type=='album') ? <Viewer details={details} type={type}/> : "" }
+        { isModalOpen && (type=='playlist') ? <ViewerPlaylist details={details} type={type} onClose={handleModalClose}/> : "" }
+        { isModalOpen && (type=='album') ? <ViewerAlbum details={details} type={type} onClose={handleModalClose}/> : "" }
+        { isModalOpen && (type=='track') ? <ViewerSong details={details} type={type} songID={details.track_id} onClose={handleModalClose}/> : "" }
         <div className="flex flex-row gap-4">
           <div className="object-contain">
             <ImageComponent blob={details.image_blob} height={48} width={48} />
@@ -44,10 +46,11 @@ function SearchComp({ details,type }) {
           </div>
         </div>
         <div className="flex flex-row items-center h-full gap-3">
-          {(type=='track' || type == "playlist")&&<button className="object-contain w-4 h-4" onClick={handleModalOpen}>
+          {(type=='track' || type == "playlist")&&
+          <button className="object-contain w-4 h-4" onClick={handleModalOpen}>
             <img src="/plus.png" className="w-4 h-4" alt="" />
           </button>}
-          {(type=='track' || type=='podcast') && <button className="object-contain w-4 h-4">
+          {(type=='track' || type=='podcast') && <button className="object-contain w-4 h-4" onClick={()=>SongHandler(details.name,details.artist_name,details.image_blob,details.track_id)}>
             <img src="/play.png" className="w-4 h-4" alt="" />
           </button>}
         </div>
@@ -96,7 +99,6 @@ export default class DisplayHandler extends React.Component {
   }
 
   Search=(query,type)=>{
-    console.log(query,type)
     this.setState({query,type})
   }
 

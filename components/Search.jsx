@@ -6,9 +6,8 @@ import SearchResult from "./DisplayHandler";
 
 export default function Search() {
   const searchRef = useRef(null);
-  const [query, setQuery] = useState("");
+
   const _searchDisplay = new SearchResult
-  const [results, setResults] = useState();
   const [active, setActive] = useState(true);
   const [filter,setFilter] = useState('Songs')
   const [dropDown,setDropDown] = useState(false)
@@ -16,8 +15,7 @@ export default function Search() {
   const onChange = useCallback((event) => {
     _searchDisplay.onSearchOpen()
     const _query=event.target.value
-    setQuery(_query)
-    _searchDisplay.Search(query,filter)
+    _searchDisplay.Search(_query,filter)
     
   }, []);
 
@@ -25,8 +23,7 @@ export default function Search() {
     if (searchRef.current && !searchRef.current.contains(event.target)) {
       setActive(false)
       window.removeEventListener("click",onClick)
-      setResults([])
-      setQuery("")
+
     }
   },[]);
 
@@ -64,7 +61,6 @@ export default function Search() {
           <input
             onChange={onChange}
             onFocus={()=>{onFocus()}}
-            value={query}
             ref={searchRef}
             type="text"
             name="name"

@@ -2,6 +2,7 @@
 import Loading from "./Loading";
 import React, { useEffect, useState, useRef } from "react";
 import { GetSong } from "@/lib/utilites";
+import pako from 'pako';
 class MusicController extends React.Component {
   constructor(props) {
     super(props);
@@ -247,30 +248,51 @@ export function MusicPlayerV2({
     if (imageBlob) setImageSrc(`data:image/jpeg;base64,${imageBlob}`);
     else setImageSrc("/music.jpg");
   }, [imageBlob]);
-
+  
   useEffect(() => {
-    if (audioBlob) setAudioSrc(audioBlob);
-    // setAudioSrc(`data:music/mp3;base64,${audioBlob}`);
-    else setAudioSrc("/song.mp3");
+    
+      const check = play
+      if(check)
+      {
+        setPlay(false)
+        setProgress(0)
+      }
+      if(audioBlob)
+      { 
+        setAudioSrc(`data:audio/wav;base64,${(audioBlob)}`)
+      }
+      else{
+        setAudioSrc(`/song.mp3`)
+      }
+
+      if(check)
+      {
+        setPlay(true)
+        playAudio()
+      }
+
   }, [audioBlob]);
 
   useEffect(() => {
     const updateProgress = () => {
-      if (audioRef.current) {
+      if (audioRef.current && progressRef.current) {
         const percentage =
           (audioRef.current.currentTime / audioRef.current.duration) * 100;
         setProgress(percentage);
+        progressRef.current.style.width = `${percentage}%`;
       }
     };
+
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateProgress);
     }
+
     return () => {
       if (audioRef.current) {
         audioRef.current.removeEventListener("timeupdate", updateProgress);
       }
     };
-  }, [audioRef, audioBlob]);
+  }, [audioRef, audioBlob, progressRef]);
 
   const handleSeekTo = (time) => {
     if (audioRef.current) {

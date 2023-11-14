@@ -5,7 +5,7 @@ import { GetLocal } from "@/lib/utilites";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-
+import Loading from "@/components/Loading";
 const UserContext = createContext();
 
 export default function Layout({ children }) {
@@ -61,6 +61,13 @@ export default function Layout({ children }) {
         </div>
       </UserContext.Provider>
     );
+  }
+  else{
+    return(
+      <div className="w-full h-screen flex flex-col justify-center items-center">
+        <Loading/>
+      </div>
+    )
   }
 }
 
