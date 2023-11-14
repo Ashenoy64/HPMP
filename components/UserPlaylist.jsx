@@ -1,16 +1,37 @@
 "use client";
-import React, { useState } from "react";
-import Card from "./Card";
+import React, { useState,useEffect } from "react";
+import { PlaylistCard } from "./Card";
+import { GetUserPlaylist,GetPlaylistInfo } from "@/lib/utilites";
 
 
+export default function UserPlaylist({details}) {
+  const [data,setData] = useState(null)
+  const [modalData,setModalData] =  useState()
+  const [uid,setUID] = useState()
 
-
-export default function UserPlaylist() {
-  
+  useEffect(()=>{
+    const FetchData=async(uid)=>{
+      try{
+        const _data = await GetUserPlaylist(uid)
+        setData(_data)
+      }
+      catch(error)
+      {
+        console.log(error)
+      }
+    }
+    const uid = details().userID
+    if(uid)
+    {
+      setUID(uid)
+      FetchData(uid)
+    }
+  },[details])
 
   const [isModalOpen, setModal] = useState(false);
 
-  function handleModalOpen() {
+  function handleModalOpen(k) {
+    setModalData(data[k])
     setModal(true);
   }
 
@@ -21,23 +42,22 @@ export default function UserPlaylist() {
  
 
   return (
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col w-full justify-center">
       <div className="flex flex-row p-4 items-center gap-2">
         <span className="font-bold text-lg"> User Playlists</span>
       </div>
       {isModalOpen && (
         <PlaylistDetails
-          isOpen={isModalOpen}
           onClose={handleModalClose}
-          data={"This is a data"}
+          uid={uid}
+          details={modalData}
         />
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
         {/* Use onClick to open the modal */}
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
-        <Card onClick={handleModalOpen} />
+        {data  && data.map((val,ind)=>{
+          return <PlaylistCard onClick={handleModalOpen} key={ind} primary={val.name} imageBlob={val.image_blob} secondary={val.doc} k={ind} id={val.playlist_id} uid={val.owner_id}  />
+        })}
       </div>
     </div>
   );
@@ -60,46 +80,37 @@ function PlaylistSong({ details }) {
   );
 }
 
-function PlaylistDetails({ isOpen, onClose, data, children }) {
-  data = {
-    Name: "PlaylistName",
-    DOC: "12-12-12",
-    Owner: "OwnerName",
-    Songs: [
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-      { name: "MusicName", author: "AuthorName" },
-    ],
-  };
+function PlaylistDetails({  onClose,details }) {
+  const [data,setData] = useState()
+  useEffect(()=>{
+    const FetchData = async()=>{
+      try{
+        const _data = await GetPlaylistInfo(details.playlist_id)
+        setData(_data)
+      }
+      catch(error){
+        console.log(error)
+      } 
+    }
+    FetchData()
+  },[details])
 
-  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 h-full">
-      <div className="bg-gray-900 bg-opacity-50 absolute inset-0"></div>
       <div className="bg-gray-800 text-white p-6 rounded-lg max-w-3xl z-10 relative">
-        <div className="flex flex-col gap-2 justify-center ">
-          <span className="font-bold text-xl text-center">{data.Name}</span>
+        <div className="flex flex-col gap-2 justify-center w-56 ">
+          <span className="font-bold text-xl text-center capitalize">{details.name}</span>
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-col gap-2 justify-start">
-              <span className="text-sm">{data.Owner}</span>
-              <span className="text-xs">{data.DOC}</span>
+              <span className="text-xs">{details.doc}</span>
             </div>
             
           </div>
           <hr />
           <div className="grid grid-cols-1 gap-2 overflow-y-scroll no-scrollbar h-96">
-            {Object.keys(data.Songs).map((k) => (
-              <PlaylistSong key={k} details={data.Songs[k]} />
-            ))}
+            { data && data.map((val,k) =>{
+              return <PlaylistSong details={val} key={k} />
+            })}
           </div>
           <button
             onClick={onClose}

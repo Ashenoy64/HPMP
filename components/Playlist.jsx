@@ -1,34 +1,41 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Card from "./Card";
+import { PlaylistCard } from "./Card";
 import PlaylistDetails from "./PlaylistDetails";
-import { GetAllPlaylist } from "@/lib/utilites";
+import { GetAllPlaylist,GetUserPlaylist } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
+import { User } from "@/app/player/page";
 
-export default function Playlist({user,uid}) {
+export default function Playlist() {
   const [isMakePlaylistOpen, setMakePlaylistModal] = useState(false);
-  const [data,setData] = useState(null)
+  const [data, setData] = useState(null);
   const [isModalOpen, setModal] = useState(false);
+  const [modalData,setModalData] =useState()
+  const [uid,setUID] = useState()
 
-  useEffect(()=>{
-    const Playlist = async()=>{
+  const {GetUserDetails} = User();
 
-      try{
-        const _data = await GetAllPlaylist(uid)
-        console.log(_data,'this')
-        setData(_data)
+  useEffect(() => {
+    const Playlist = async () => {
+      const uid = GetUserDetails().userID;
+      try {
+        // const _data = await GetAllPlaylist(uid);
+        const _data = await GetUserPlaylist(uid);
+        setData(_data);
+      } catch (error) {
+        console.log(error);
       }
-      catch(error)
-      {
-        console.log(error)
-      }
-
+    };
+    const uid = GetUserDetails().userID;
+    if (uid) 
+    {
+      setUID(uid)
+      Playlist();
     }
-    Playlist()
-  },[uid])
+  }, [GetUserDetails]);
 
-
-  function handleModalOpen() {
+  function handleModalOpen(k) {
+    setModalData(data[k]);
     setModal(true);
   }
 
@@ -50,6 +57,7 @@ export default function Playlist({user,uid}) {
         <MakePlaylistModal
           isOpen={isMakePlaylistOpen}
           onClose={handleMakePlaylistClose}
+          uid={uid}
         />
       )}
       <div className="flex flex-row p-4 items-center gap-2">
@@ -65,14 +73,27 @@ export default function Playlist({user,uid}) {
       </div>
       {isModalOpen && (
         <PlaylistDetails
-          isOpen={isModalOpen}
           onClose={handleModalClose}
-          data={"This is a data"}
+          uid={uid}
+          details={modalData}
         />
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
-        {/* Use onClick to open the modal */}
-        
+        {data &&
+          data.map((val, ind) => {
+            return (
+              <PlaylistCard
+                onClick={handleModalOpen}
+                key={ind}
+                primary={val.name}
+                imageBlob={val.image_blob}
+                secondary={val.doc}
+                k={ind}
+                id={val.playlist_id}
+                uid={val.owner_id}
+              />
+            );
+          })}
       </div>
     </div>
   );

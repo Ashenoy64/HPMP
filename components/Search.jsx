@@ -6,53 +6,19 @@ import SearchResult from "./DisplayHandler";
 
 export default function Search() {
   const searchRef = useRef(null);
-
   const [query, setQuery] = useState("");
-
   const _searchDisplay = new SearchResult
-
-  
-  const [results, setResults] = useState([
-    [
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-      { name: "Avanish" },
-      { name: "Monish" },
-    ],
-  ]);
-
-  //End
-
+  const [results, setResults] = useState();
   const [active, setActive] = useState(true);
   const [filter,setFilter] = useState('Songs')
   const [dropDown,setDropDown] = useState(false)
 
   const onChange = useCallback((event) => {
-    const query=event.target.value
-    setQuery(query)
-    if(query.length){
-        // fetch(`http://localhost:5000/getRecommendation/${query}`)
-        //     .then(res=>res.json())
-        //     .then(res=>{setResults([res.result])})
-    }
-    else{
-        setResults([])
-    }
-    _searchDisplay.handleSearch(results,true)
+    _searchDisplay.onSearchOpen()
+    const _query=event.target.value
+    setQuery(_query)
+    _searchDisplay.Search(query,filter)
+    
   }, []);
 
   const onClick = useCallback((event) => {
@@ -67,15 +33,15 @@ export default function Search() {
   
   const onFocus = useCallback(() => {
     setActive(true);
-    _searchDisplay.handleSearch(results,true)
+    _searchDisplay.onSearchOpen()
   
   }, []);
   const handleDropDown=()=>{
-    console.log("Test")
     setDropDown(!dropDown)
   }
   const setDropDownOption=(option)=>{
       setFilter(option)
+      _searchDisplay.Search(query,filter)
   }
 
   return (
@@ -88,10 +54,10 @@ export default function Search() {
             </button>
             <div className={`absolute text-white font-semibold rounded bg-neutral-700 p-2 ${dropDown?"block":"hidden"}`}>
                 <ul >
-                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Songs')}}>Songs</li>
-                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Album')}}>Album</li>
-                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('Podcast')}}>Podcast</li>
-                  <li  className=" cursor-pointer" onClick={()=>{setDropDownOption('Playlist')}}>Playlist</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('track')}}>Songs</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('album')}}>Album</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('podcast')}}>Podcast</li>
+                  <li  className=" cursor-pointer" onClick={()=>{setDropDownOption('playlist')}}>Playlist</li>
                 </ul>
             </div>
           </div>
@@ -105,7 +71,7 @@ export default function Search() {
             className="text-black w-full md:w-full bg-slate-100 p-3 outline-0 "
             placeholder="Search"
           />
-          <button type="submit" className=" object-contain w-12 sm:w-8 rounded-r">
+          <button type="submit" className=" object-contain w-12 sm:w-8 rounded-r" onClick={()=>{_searchDisplay._Search()}}>
             <img src="/search.png" alt="" className="bg-slate-100  w-12 sm:w-8  " />
           </button>
         </div>

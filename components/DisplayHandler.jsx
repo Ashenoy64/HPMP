@@ -2,13 +2,26 @@
 import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
-import SongPlaylist from "./SongsToPlaylist";
+import Viewer from "./SongsToPlaylist";
 import ImageComponent from "./Image";
+import { SearchRequest } from "@/lib/utilites";
+
 let _intance = null;
 
-function SearchComp({ primary,secondary, imgBlob }) {
+function extractTestValue(inputString) {
+  const match = inputString.match(/'([^']*)'/);
+
+  // Check if a match is found
+  if (match) {
+      return match[1];
+  } else {
+      return inputString;
+  }
+}  
+
+function SearchComp({ details,type }) {
   const [isModalOpen,setModalOpen] =  useState(false);
-    
+  
   function handleModalClose() {
       setModalOpen(false);
     }
@@ -20,23 +33,23 @@ function SearchComp({ primary,secondary, imgBlob }) {
 
     return (
       <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2">
-        {isModalOpen && <SongPlaylist onClose={handleModalClose}></SongPlaylist> }
+        { isModalOpen && (type=='playlist' || type=='album') ? <Viewer details={details} type={type}/> : "" }
         <div className="flex flex-row gap-4">
           <div className="object-contain">
-            <ImageComponent blob={imgBlob} height={48} width={48} />
+            <ImageComponent blob={details.image_blob} height={48} width={48} />
           </div>
           <div className="flex flex-col">
-            <span className="text-md">{primary}</span>
-            <span className="text-sm">{secondary}</span>
+            <span className="text-md">{details.name}</span>
+            <span className="text-sm">{extractTestValue(details.artist_name)}</span>
           </div>
         </div>
         <div className="flex flex-row items-center h-full gap-3">
-          <button className="object-contain w-4 h-4" onClick={handleModalOpen}>
+          {(type=='track' || type == "playlist")&&<button className="object-contain w-4 h-4" onClick={handleModalOpen}>
             <img src="/plus.png" className="w-4 h-4" alt="" />
-          </button>
-          <button className="object-contain w-4 h-4">
+          </button>}
+          {(type=='track' || type=='podcast') && <button className="object-contain w-4 h-4">
             <img src="/play.png" className="w-4 h-4" alt="" />
-          </button>
+          </button>}
         </div>
       </div>
     );
@@ -44,7 +57,7 @@ function SearchComp({ primary,secondary, imgBlob }) {
 
 
 
-function SearchResult({result,onSearchClose,user,id})
+function SearchResult({result,onSearchClose,type})
 {
   
   return(
@@ -60,8 +73,8 @@ function SearchResult({result,onSearchClose,user,id})
   <div
         className={`grid grid-cols-0  grid-flow-row md:grid-cols-3 lg:grid-cols-4 mx-auto md:w-11/12  gap-2  overflow-y-auto no-scrollbar h-screen`}>
         {result.length > 0 &&
-          Object.keys(result[0]).map((k) => {
-            return <SearchComp key={k} name={result[0][k]["name"]} />;
+          result.map((val,k) => {
+            return <SearchComp key={k} details={val} type={type} />;
           })}
       </div>
       </div>)
@@ -75,14 +88,35 @@ export default class DisplayHandler extends React.Component {
     }
     this.state={
         active:false,
-        result:[[]],
+        result:[],
+        query:"",
+        type:"",
     }
     _intance = this;
   }
 
-  handleSearch=(result,activity)=>
-  { 
-    this.setState({active:activity,result:result})
+  Search=(query,type)=>{
+    console.log(query,type)
+    this.setState({query,type})
+  }
+
+
+  _Search=async()=>{
+    const query = "Break Free"
+    const type = "track"
+    try{
+      const _data = await SearchRequest(type,query)
+      this.setState({result:_data})
+    }
+    catch(error)
+    {
+
+    }
+  }
+
+  onSearchOpen=()=>{
+    this.setState({active:true})
+
   }
 
   onSearchClose=()=>{
@@ -94,11 +128,11 @@ export default class DisplayHandler extends React.Component {
 
     return (
       <div className="my-16 p-2">
-        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose} user={this.user} id={this.id}/>
+        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose} type={'track'}/>
         ) : (
           <div>
-            <RecentlyPlayed  uid={1} />
-            <Playlist  uid={1} />
+            <RecentlyPlayed/>
+            <Playlist />
           </div>
         )}
       </div>

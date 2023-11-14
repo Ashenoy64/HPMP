@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Card from "./Card";
+import {RecentlyPlayedCard} from "./Card";
 import { GetRecentlyPlayed,GetLocal } from "@/lib/utilites";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { User } from "@/app/player/page";
+import MusicPlayer from "./MusicPlayer";
 
 function extractTestValue(inputString) {
   const match = inputString.match(/'([^']*)'/);
@@ -16,13 +16,15 @@ function extractTestValue(inputString) {
   }
 }  
 
-export default function RecentlyPlayed({uid}) {
+export default function RecentlyPlayed() {
   const [data,setData] = useState(null)
-
-
+  const {GetUserDetails,SongHandler} = User()
+  
+  const player = new MusicPlayer()
 
   useEffect(()=>{
     const Recent=async ()=>{
+      const uid= GetUserDetails().userID
       try{
         const _data = await GetRecentlyPlayed(uid)
         const arr = _data.result
@@ -36,9 +38,10 @@ export default function RecentlyPlayed({uid}) {
         console.log(error)
       }
     }
+    const uid= GetUserDetails().userID
     if(uid)
     Recent()
-  },[uid])
+  },[GetUserDetails])
 
   return (
     <div className="flex flex-col justify-center">
@@ -47,7 +50,7 @@ export default function RecentlyPlayed({uid}) {
       </div>
       <div className="grid grid-flow-col justify-start  w-full md:mx-8  gap-4  rounded-lg h-64 no-scrollbar overflow-x-auto">
       {data && data.map((val,ind)=>{
-        return <Card key={ind} primary={val.name} secondary={extractTestValue(val.artist_name)} imageBlob={val.image_blob} type={"track"} id={val.track_id} />
+        return <RecentlyPlayedCard key={ind} primary={val.name} secondary={extractTestValue(val.artist_name)} imageBlob={val.image_blob} type={"track"} id={val.track_id} player={SongHandler} />
       })}
       </div>
     </div>
