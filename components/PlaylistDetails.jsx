@@ -3,12 +3,20 @@ import React,{useState,useEffect} from "react";
 import { GetPlaylistInfo } from "@/lib/utilites";
 import { User } from "@/app/player/page";
 
+function extractTestValue(inputString) {
+  const match = inputString.match(/'([^']*)'/);
 
+  // Check if a match is found
+  if (match) {
+      return match[1];
+  } else {
+      return inputString;
+  }
+} 
 
 function PlaylistSong({ details }) {
   const [imageSrc,setSrc] = useState()
   const {SongHandler} = User()
-
   useEffect(()=>{
     console.log(details)
     if(details.image_blob) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
@@ -16,14 +24,14 @@ function PlaylistSong({ details }) {
       else setSrc('/music.jpg')
   },[details])
   return (
-    <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2 cursor-pointer hover:shadow-[0_0_2px_1px_rgba(_255,_255,_255,_0.7)]" onClick={()=>{SongHandler(details.name,details.username,details.image_blob,details.track_id)}} >
+    <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2 cursor-pointer hover:shadow-[0_0_2px_1px_rgba(_255,_255,_255,_0.7)]" onClick={()=>{SongHandler(details.name,extractTestValue(details.artist_name),details.image_blob,details.track_id)}} >
       <div className="flex flex-row gap-4">
         <div className="object-contain">
           <img src={imageSrc} className="w-12 h-12" alt="" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm">{details.name}</span>
-          <span className="text-xs">{details.artist_name}</span>
+          <span className="text-xs">{extractTestValue(details.artist_name)}</span>
         </div>
       </div>
     </div>

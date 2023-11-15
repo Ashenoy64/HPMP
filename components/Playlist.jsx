@@ -6,6 +6,8 @@ import { GetAllPlaylist,GetUserPlaylist } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
 import { User } from "@/app/player/page";
 
+
+
 export default function Playlist() {
   const [isMakePlaylistOpen, setMakePlaylistModal] = useState(false);
   const [data, setData] = useState(null);

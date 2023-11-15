@@ -2,8 +2,8 @@
 
 import Search from "./Search";
 import { useEffect, useState } from "react";
-import {auth} from "@/lib/firebase"
-import { signOut,onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 export default function NavBar() {
   const router = useRouter();
@@ -12,22 +12,21 @@ export default function NavBar() {
     router.push(path);
   };
 
-  const [user,setUser]=useState("")
-  useEffect(()=>{
+  const [user, setUser] = useState("");
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user)
-        setUser(user)
+        console.log(user);
+        setUser(user);
         // ...
-      } 
+      }
     });
-  },[])
+  }, []);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prevState) => !prevState);
   };
-  
 
   return (
     <div className="flex flex-row w-full justify-between p-2 ">
@@ -41,7 +40,7 @@ export default function NavBar() {
       </div>
       <div>
         <div className="hidden md:flex space-x-6">
-          <div className="font-semibold text-lg text-white"> {user.email}</div>
+          <div className="font-medium text-md text-white"> {user.email}</div>
           <button
             onClick={() => {
               handleRoute("/user");
@@ -53,12 +52,13 @@ export default function NavBar() {
 
           <button
             onClick={async () => {
-                signOut(auth).then(()=>{
-                console.log("signed out")
-                }).catch((error)=>{
-                  console.log(error)
+              signOut(auth)
+                .then(() => {
+                  console.log("signed out");
                 })
-                
+                .catch((error) => {
+                  console.log(error);
+                });
             }}
             className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
           >
@@ -67,7 +67,7 @@ export default function NavBar() {
         </div>
 
         {/* Mobile Menu Icon */}
-        <div className="md:hidden">
+        <div className="md:hidden flex flex-row justify-end z-10 ">
           <button
             className="text-white focus:outline-none"
             onClick={toggleMobileMenu}
@@ -109,26 +109,29 @@ export default function NavBar() {
         {/* Mobile Nav Links */}
         {isMobileMenuOpen && (
           <div className="md:hidden top-16 right-0 left-0 z-10">
-            <div className=" flex flex-col gap-2 p-2">
-              <div className="font-semibold text-lg">{user.email}</div>
-              <button
-                onClick={() => {
-                  handleRoute("/user");
-                }}
-                className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
-              >
-                Profile
-              </button>
+            <div className=" flex flex-col gap-2 p-2 justify-end text-right ">
+              <div className="font-semibold text-md">{user.email}</div>
+              <div>
+                <button
+                  onClick={() => {
+                    handleRoute("/user");
+                  }}
+                  className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
+                >
+                  Profile
+                </button>
+              </div>
               <div className="">
                 <button
-                 onClick={async () => {
-                  signOut(auth).then(()=>{
-                    console.log("signed out")
-                  }).catch((error)=>{
-                    console.log(error)
-                  })
-                  
-                }}
+                  onClick={async () => {
+                    signOut(auth)
+                      .then(() => {
+                        console.log("signed out");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }}
                   className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
                 >
                   Sign Out

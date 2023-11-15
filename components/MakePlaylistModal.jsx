@@ -2,23 +2,26 @@
 import React, { useState } from "react";
 import { AddPlaylist, BlobToBase64, HandleFileChange } from "@/lib/utilites";
 import Loading from "./Loading";
+import { User } from "@/app/player/page";
 
 export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const [name, setName] = useState();
   const [cover, setCover] = useState();
   const [coverName, setCoverName] = useState();
   const [loading, setLoading] = useState(false);
+  const {Notify} = User()
 
-  const AddUserPlaylist = async (uid, name) => {
+  const AddUserPlaylist = async (uid, name,Cover) => {
     try {
-      const res = await AddPlaylist(uid, name);
+      const res = await AddPlaylist(uid, name,Cover);
       if (res == "ok") {
-        alert("DONE");
+        Notify("Made a new Playlist");
       } else {
-        alert("Failed");
+        Notify("Failed");
       }
     } catch (error) {
       console.log(error);
+      Notify("Failed");
     }
   };
 
@@ -38,8 +41,8 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (name && name != "") {
-      const cover = await BlobToBase64(podcastBlob);
-      AddUserPlaylist(uid, name);
+      const CoverBlob = await BlobToBase64(cover);
+      await AddUserPlaylist(uid, name,CoverBlob);
     }
 
     try {
@@ -122,8 +125,8 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
               </div>
             ) : (
               <button
-                onClick={() => {
-                  handleSubmit();
+                onClick={(e) => {
+                  handleSubmit(e);
                 }}
                 className="text-green-500 hover:underline cursor-pointer rounded-md"
               >

@@ -57,7 +57,7 @@ export default function Home() {
         // await setAudioBlob(`data:audio/mp3;base64,${_data.audio_blob}`)
         // setAudioBlob(_data.audio_url);
         setAudioBlob(_data.audio_blob)
-        // await UpdateRecentlyPlayed(trackID, userID);
+        await UpdateRecentlyPlayed(trackID, userID);
       } catch (error) {
         console.log(error);
       }

@@ -9,7 +9,7 @@ export default function Search() {
 
   const _searchDisplay = new SearchResult
   const [active, setActive] = useState(true);
-  const [filter,setFilter] = useState('Songs')
+  const [filter,setFilter] = useState('track')
   const [dropDown,setDropDown] = useState(false)
 
   const onChange = useCallback((event) => {
@@ -23,7 +23,6 @@ export default function Search() {
     if (searchRef.current && !searchRef.current.contains(event.target)) {
       setActive(false)
       window.removeEventListener("click",onClick)
-
     }
   },[]);
 
@@ -46,12 +45,12 @@ export default function Search() {
       <div className="mx-auto flex flex-col justify-between w-3/4 text-white gap-12">
         <div className=" mx-auto flex flex-row justify-between  outline-10 object-contain bg-white  w-full h-8 rounded-lg overflow-hidden items-center">
           <div className=" w-24 text-black p-1  border-r-2 bg-slate-300">
-            <button className="w-full" onClick={()=>handleDropDown()}>
+            <button className="w-full capitalize" onClick={()=>handleDropDown()}>
               <span>{filter}</span>
             </button>
             <div className={`absolute text-white font-semibold rounded bg-neutral-700 p-2 ${dropDown?"block":"hidden"}`}>
                 <ul >
-                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('track')}}>Songs</li>
+                  <li className=" cursor-pointer" onClick={()=>{setDropDownOption('track')}}>Track</li>
                   <li className=" cursor-pointer" onClick={()=>{setDropDownOption('album')}}>Album</li>
                   <li className=" cursor-pointer" onClick={()=>{setDropDownOption('podcast')}}>Podcast</li>
                   <li  className=" cursor-pointer" onClick={()=>{setDropDownOption('playlist')}}>Playlist</li>
@@ -59,7 +58,7 @@ export default function Search() {
             </div>
           </div>
           <input
-            onChange={onChange}
+            onChange={(e)=>onChange(e)}
             onFocus={()=>{onFocus()}}
             ref={searchRef}
             type="text"
@@ -67,8 +66,8 @@ export default function Search() {
             className="text-black w-full md:w-full bg-slate-100 p-3 outline-0 "
             placeholder="Search"
           />
-          <button type="submit" className=" object-contain w-12 sm:w-8 rounded-r" onClick={()=>{_searchDisplay._Search()}}>
-            <img src="/search.png" alt="" className="bg-slate-100  w-12 sm:w-8  " />
+          <button type="submit" className=" object-contain w-10 rounded-r" onClick={()=>{_searchDisplay._Search()}}>
+            <img src="/search.png" alt="" className="bg-slate-100 p-2  w-10  " />
           </button>
         </div>
       </div>

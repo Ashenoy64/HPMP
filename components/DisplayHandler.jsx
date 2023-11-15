@@ -94,26 +94,62 @@ export default class DisplayHandler extends React.Component {
         result:[],
         query:"",
         type:"",
+        displayContent:[]
     }
     _intance = this;
   }
 
   Search=(query,type)=>{
-    this.setState({query,type})
+    if(this.state.type!=type)
+    {
+      if(query.length>=3)
+      {
+        this.setState({query,type})
+        this._Search()
+      }
+      else{
+        this.setState({query,type})
+      }
+    }
+    else{
+      if(query.length<3)
+      {
+        console.log("here")
+        this.setState({query,type})
+      }
+      else if(query.length==3)
+      {
+        this.setState({query,type})
+        this._Search()
+      }
+      else{
+        this.setState({query,type})
+        if(this.state.result)
+        {
+          const filteredArray = this.state.result.filter(obj => obj.name.toLowerCase().includes(searchText.toLowerCase()));
+          this.setState({displayContent:filteredArray})
+        }
+      }
+    }
   }
 
 
   _Search=async()=>{
-    const query = "Break Free"
-    const type = "track"
-    try{
-      const _data = await SearchRequest(type,query)
-      this.setState({result:_data})
-    }
-    catch(error)
+    const query = this.state.query
+    const type =  this.state.type
+    if(query && type)
     {
-
+      try{
+        const _data = await SearchRequest('track','Break Free')
+        const filteredArray = _data.filter(obj => obj.name.toLowerCase().includes(searchText.toLowerCase()));
+        this.setState({result:_data,displayContent:filteredArray})
+      }
+      catch(error)
+      {
+        console.log(error)
+      }
     }
+    
   }
 
   onSearchOpen=()=>{
@@ -122,7 +158,8 @@ export default class DisplayHandler extends React.Component {
   }
 
   onSearchClose=()=>{
-    this.setState({active:false})
+    this.setState({active:false,result:[],type:""})
+    
   }
 
 
@@ -130,7 +167,7 @@ export default class DisplayHandler extends React.Component {
 
     return (
       <div className="my-16 p-2">
-        {this.state.active ? (<SearchResult result={this.state.result} onSearchClose={this.onSearchClose} type={'track'}/>
+        {this.state.active ? (<SearchResult result={this.state.displayContent} onSearchClose={this.onSearchClose} type={'track'}/>
         ) : (
           <div>
             <RecentlyPlayed/>
