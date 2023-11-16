@@ -85,7 +85,6 @@ export function ViewerPlaylist({  onClose,details}) {
   );
 }
 
-
 export function ViewerAlbum({  onClose,details}) {
 
   const [data,setData] = useState()
@@ -131,7 +130,6 @@ export function ViewerAlbum({  onClose,details}) {
   );
 }
 
-
 function PlaylistItems({ details,uid,songID }) {
 
   const [imageSrc,setSrc] = useState()
@@ -176,7 +174,6 @@ function PlaylistItems({ details,uid,songID }) {
     </div>
   );
 }
-
 
 export function ViewerSong({onClose,details,songID})
 {
