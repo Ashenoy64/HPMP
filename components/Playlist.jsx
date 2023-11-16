@@ -24,6 +24,7 @@ export default function Playlist() {
         // const _data = await GetAllPlaylist(uid);
         const _data = await GetUserPlaylist(uid);
         setData(_data);
+
       } catch (error) {
         console.log(error);
       }

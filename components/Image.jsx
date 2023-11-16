@@ -5,12 +5,12 @@ const ImageComponent = ({ blob, width, height }) => {
   const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
-    if(true)
+    if(blob && blob !="")
     {
       setImageSrc(`data:image/jpeg;base64,${blob}`)
     }
     else{
-      setImageSrc(blob)
+      setImageSrc('/playlistCover.jpg')
     }
   }, [blob]);
 

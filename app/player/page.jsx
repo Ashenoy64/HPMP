@@ -41,8 +41,7 @@ export default function Home() {
   useEffect(() => {
     const UpdateRecentlyPlayed = async (trackID, userID) => {
       try {
-        const res = await SetRecentlyPlayed(trackID, userID);
-        console.log("This");
+        const res = await SetRecentlyPlayed(userID,trackID);
       } catch (error) {
         console.log(error);
       }
@@ -51,11 +50,6 @@ export default function Home() {
     const FetchSong = async (trackID) => {
       try {
         const _data = await GetSong(trackID);
-        // this.setState({src:`data:audio/mp3;base64,${_data.audio_blob}`})
-        // const blob = new Blob([_data.value],{type:"audio/mp3"})
-        // const url = URL.createObjectURL(blob)
-        // await setAudioBlob(`data:audio/mp3;base64,${_data.audio_blob}`)
-        // setAudioBlob(_data.audio_url);
         setAudioBlob(_data.audio_blob)
         await UpdateRecentlyPlayed(trackID, userID);
       } catch (error) {

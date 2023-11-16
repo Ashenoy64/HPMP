@@ -11,10 +11,12 @@ export default function Search() {
   const [active, setActive] = useState(true);
   const [filter,setFilter] = useState('track')
   const [dropDown,setDropDown] = useState(false)
+  const [query,setQuery] = useState("")
 
   const onChange = useCallback((event) => {
     _searchDisplay.onSearchOpen()
     const _query=event.target.value
+    setQuery(_query)
     _searchDisplay.Search(_query,filter)
     
   }, []);
@@ -37,7 +39,8 @@ export default function Search() {
   }
   const setDropDownOption=(option)=>{
       setFilter(option)
-      _searchDisplay.Search(query,filter)
+      console.log(option)
+      _searchDisplay.Search(query,option)
   }
 
   return (
@@ -66,7 +69,7 @@ export default function Search() {
             className="text-black w-full md:w-full bg-slate-100 p-3 outline-0 "
             placeholder="Search"
           />
-          <button type="submit" className=" object-contain w-10 rounded-r" onClick={()=>{_searchDisplay._Search()}}>
+          <button type="submit" className=" object-contain w-10 rounded-r" onClick={()=>{_searchDisplay._Search(query,filter)}}>
             <img src="/search.png" alt="" className="bg-slate-100 p-2  w-10  " />
           </button>
         </div>
