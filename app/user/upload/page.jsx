@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
-import { HandleFileChange,BlobToBase64 } from "@/lib/utilites";
+import { HandleFileChange,BlobToBase64,UploadPodcast } from "@/lib/utilites";
+import { useUser } from "../layout";
 
 
 
@@ -13,10 +14,13 @@ export default function Upload() {
   const [loading, setLoading] = useState(false);
   const [podcastFileName, setPodcastFileName] = useState("");
   const [coverFileName, setCoverFileName] = useState("");
+  const [duration,setDuration]=useState(0)
+  const {GetUserDetails}=useUser();
+
 
   const handleFileChange = async (event, type) => {
     setLoading(true);
-
+    
     const res = await HandleFileChange(event);
 
     if (res) {
@@ -26,6 +30,7 @@ export default function Upload() {
       } else {
         setCoverBlob(res);
         setCoverFileName(event.target.files[0].name);
+        console.log(event.target.files[0])
       }
     }
 
@@ -35,6 +40,11 @@ export default function Upload() {
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
+  
+  const handleDurationChange = (event) => {
+    setDuration(event.target.value);
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +53,17 @@ export default function Upload() {
     console.log("Name:", name);
 
     const podcastBase64 = await BlobToBase64(podcastBlob);
-    const coverBase64 = await BlobToBase64(coverBlob);
-
+    const coverBase64=null 
+    
+    if (coverBlob!=null){
+      const coverBase64 = await BlobToBase64(coverBlob);
+    }
+    
+    
+    
+    
     try {
+      UploadPodcast(name,duration,GetUserDetails.userID,coverBase64,podcastBase64)
     } catch (error) {
       console.log(error);
     }
@@ -62,6 +80,15 @@ export default function Upload() {
             onChange={handleNameChange}
           />
         </div>
+        <div className="flex flex-col  gap-4 justify-center text-center rounded-lg text-black  ">
+          <input
+            className="p-2 rounded"
+            defaultValue=""
+            placeholder="Duration"
+            onChange={handleDurationChange}
+          />
+        </div>
+        
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           <div>Podcast</div>
           <label className="flex flex-col gap-2 items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">

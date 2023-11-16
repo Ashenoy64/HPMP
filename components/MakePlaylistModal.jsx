@@ -9,9 +9,9 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const [coverName, setCoverName] = useState();
   const [loading, setLoading] = useState(false);
 
-  const AddUserPlaylist = async (uid, name) => {
+  const AddUserPlaylist = async (uid, name, imageBlob) => {
     try {
-      const res = await AddPlaylist(uid, name);
+      const res = await AddPlaylist(uid, name, imageBlob);
       if (res == "ok") {
         alert("DONE");
       } else {
@@ -38,8 +38,9 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (name && name != "") {
-      const cover = await BlobToBase64(podcastBlob);
-      AddUserPlaylist(uid, name);
+      const imageBlob = await BlobToBase64(cover);
+      
+      AddUserPlaylist(uid, name, imageBlob);
     }
 
     try {
@@ -122,8 +123,8 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
               </div>
             ) : (
               <button
-                onClick={() => {
-                  handleSubmit();
+                onClick={(e) => {
+                  handleSubmit(e);
                 }}
                 className="text-green-500 hover:underline cursor-pointer rounded-md"
               >
