@@ -2,23 +2,26 @@
 import React, { useState } from "react";
 import { AddPlaylist, BlobToBase64, HandleFileChange } from "@/lib/utilites";
 import Loading from "./Loading";
+import { User } from "@/app/player/page";
 
 export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const [name, setName] = useState();
   const [cover, setCover] = useState();
   const [coverName, setCoverName] = useState();
   const [loading, setLoading] = useState(false);
+  const {Notify} = User()
 
-  const AddUserPlaylist = async (uid, name, imageBlob) => {
+  const AddUserPlaylist = async (uid, name,Cover) => {
     try {
-      const res = await AddPlaylist(uid, name, imageBlob);
+      const res = await AddPlaylist(uid, name,Cover);
       if (res == "ok") {
-        alert("DONE");
+        Notify("Made a new Playlist");
       } else {
-        alert("Failed");
+        Notify("Failed");
       }
     } catch (error) {
       console.log(error);
+      Notify("Failed");
     }
   };
 
@@ -38,9 +41,8 @@ export default function MakePlaylistModal({ isOpen, onClose, uid }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (name && name != "") {
-      const imageBlob = await BlobToBase64(cover);
-      
-      AddUserPlaylist(uid, name, imageBlob);
+      const CoverBlob = await BlobToBase64(cover);
+      await AddUserPlaylist(uid, name,CoverBlob);
     }
 
     try {

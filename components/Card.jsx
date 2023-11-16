@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageComponent from "./Image";
 
 export default function Card({imageBlob,primary,secondary,onClick,uid,type,id}){
@@ -44,14 +44,23 @@ export function RecentlyPlayedCard({imageBlob,primary,secondary,onClick,uid,type
 
 
 export function PlaylistCard({imageBlob,primary,secondary,onClick,uid,id,k,owner,deleteHandler}){
-  
+  const [src,setSrc] =useState()
+  useEffect(()=>{
+    if(imageBlob)
+    {
+      setSrc(`data:image/jpeg;base64,${imageBlob}`)
+    }
+    else{
+      setSrc('/playlistCover.jpg')
+    }
+  },[imageBlob])
   return (
       <div
         className="flex flex-col  bg-neutral-800  rounded-lg w-40 h-56 transition-shadow hover:shadow-white hover:shadow-sm "
         onClick={()=>{onClick(k)}}
       >
         <div className="w-32 h-32 object-contain m-auto">
-           <img src={imageBlob ? imageBlob : "/music.jpg"} className=" w-32 h-32"/>
+           <img src={src} className=" w-32 h-32"/>
         </div>
         <div className="w-32 m-auto over">
           <p className="font-semibold capitalize">{primary}</p>
