@@ -6,7 +6,6 @@ import { User } from "@/app/player/page";
 function extractTestValue(inputString) {
   const match = inputString.match(/'([^']*)'/);
 
-  // Check if a match is found
   if (match) {
       return match[1];
   } else {
@@ -18,7 +17,7 @@ function PlaylistSong({ details }) {
   const [imageSrc,setSrc] = useState()
   const {SongHandler} = User()
   useEffect(()=>{
-    console.log(details)
+
     if(details.image_blob) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
       else if(details.image_url) setSrc(details.image_url)
       else setSrc('/music.jpg')
@@ -40,6 +39,7 @@ function PlaylistSong({ details }) {
 
 export default function PlaylistDetails({  onClose,details }) {
   const [data,setData] = useState()
+  console.log(details,"here")
   useEffect(()=>{
     const FetchData = async()=>{
       try{

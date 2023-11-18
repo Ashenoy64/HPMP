@@ -237,7 +237,7 @@ export function MusicPlayerV2({
 }) {
   const [volume, setVolume] = useState(0.5);
   const [imageSrc, setImageSrc] = useState();
-  const [audioSrc, setAudioSrc] = useState();
+  const [audioSrc, setAudioSrc] = useState(null);
   const [progress, setProgress] = useState(0);
 
   const [play, setPlay] = useState(false);
@@ -251,12 +251,9 @@ export function MusicPlayerV2({
   
   useEffect(() => {
     
-      const check = play
-      if(check)
-      {
-        setPlay(false)
-        setProgress(0)
-      }
+      
+      pauseAudio()
+      setProgress(0)
       if(audioBlob)
       { 
         setAudioSrc(`data:audio/wav;base64,${(audioBlob)}`)
@@ -264,14 +261,24 @@ export function MusicPlayerV2({
       else{
         setAudioSrc(`/song.mp3`)
       }
-
-      if(check)
-      {
-        setPlay(true)
-        playAudio()
-      }
-
   }, [audioBlob]);
+
+  useEffect(()=>{
+  if(audioSrc && name)
+  playAudio()    
+  },[audioSrc])
+
+  const handleSeekForward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime += 5; // Seek forward by 5 seconds
+    }
+  };
+
+  const handleSeekBackward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime -= 5; // Seek backward by 5 seconds
+    }
+  };
 
   useEffect(() => {
     const updateProgress = () => {
@@ -294,11 +301,7 @@ export function MusicPlayerV2({
     };
   }, [audioRef, audioBlob, progressRef]);
 
-  const handleSeekTo = (time) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-    }
-  };
+
 
   const playAudio = () => {
     if (audioRef.current) {
@@ -330,7 +333,7 @@ export function MusicPlayerV2({
           <div className="flex flex-col gap-2">
             <audio id="player" ref={audioRef} src={audioSrc}></audio>
             <div className="flex flex-row justify-center gap-4">
-              <button className="w-8 h-8" onClick={() => handleSeekTo(0)}>
+              <button className="w-8 h-8" onClick={() =>handleSeekBackward()}>
                 <img src="/backward.png" alt="" className="w-7 h-7" />
               </button>
               {loading ? (
@@ -344,7 +347,7 @@ export function MusicPlayerV2({
                   <img src="/play.png" alt="" className="w-8 h-8" />
                 </button>
               )}
-              <button className="w-8 h-8" onClick={() => forward()}>
+              <button className="w-8 h-8" onClick={() => handleSeekForward()}>
                 <img src="/forward.png" alt="" className="w-7 h-7" />
               </button>
             </div>

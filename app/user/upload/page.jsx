@@ -15,8 +15,8 @@ export default function Upload() {
   const [podcastFileName, setPodcastFileName] = useState("");
   const [coverFileName, setCoverFileName] = useState("");
   const [duration,setDuration]=useState(0)
-  const {GetUserDetails}=useUser();
-
+  const {GetUserDetails,Notify}=useUser();
+  
 
   const handleFileChange = async (event, type) => {
     setLoading(true);
@@ -30,7 +30,6 @@ export default function Upload() {
       } else {
         setCoverBlob(res);
         setCoverFileName(event.target.files[0].name);
-        console.log(event.target.files[0])
       }
     }
 
@@ -48,25 +47,34 @@ export default function Upload() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Blob:", podcastBlob);
-    console.log("Blob:", coverBlob);
-    console.log("Name:", name);
-
+    setLoading(true)
     const podcastBase64 = await BlobToBase64(podcastBlob);
-    const coverBase64=null 
+    let coverBase64=null 
     
     if (coverBlob!=null){
-      const coverBase64 = await BlobToBase64(coverBlob);
+      coverBase64 = await BlobToBase64(coverBlob);
     }
-    
-    
     
     
     try {
-      UploadPodcast(name,duration,GetUserDetails.userID,coverBase64,podcastBase64)
+      const res = await UploadPodcast(name,duration,GetUserDetails().userID,coverBase64,podcastBase64)
+      if(res=='ok'){
+        Notify("Uploaded the podcast")
+        setName("")
+        setDuration("")
+        setCoverFileName()
+        setPodcastFileName()
+        setPocastBlob()
+        setCoverBlob()
+      }
+      else{
+        Notify("Failed to upload the podcast")
+      }
     } catch (error) {
+      Notify("Failed to upload the podcast")
       console.log(error);
     }
+    setLoading(false)
   };
 
   return (

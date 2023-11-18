@@ -1,5 +1,5 @@
 "use client";
-import MusicPlayer, { MusicPlayerV2 } from "@/components/MusicPlayer";
+import  { MusicPlayerV2 } from "@/components/MusicPlayer";
 import Modal from "@/components/ModalViewer";
 import NavBar from "@/components/NavBar";
 import DisplayHandler from "@/components/DisplayHandler";
@@ -8,7 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useContext, createContext } from "react";
 import { GetLocal, SetRecentlyPlayed } from "@/lib/utilites";
-import { GetSong } from "@/lib/utilites";
+import { GetSong,GetPodcast } from "@/lib/utilites";
 import Loading from "@/components/Loading";
 
 const UserContext = createContext();
@@ -25,6 +25,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState("");
   const [noticeActive, setNoticeActive] = useState(false);
+  const [fetchObject,setFetchObject] = useState({})
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -57,10 +58,31 @@ export default function Home() {
       }
       setLoading(false);
     };
-    if (trackID) {
-      FetchSong(trackID);
+
+    const FetchPodcast = async (podcastID) => {
+      try {
+        const _data = await GetPodcast(podcastID);
+        console.log(_data)
+        setAudioBlob(_data.audio_blob);
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+
+
+
+    if (fetchObject && fetchObject.type == 'track') {
+      FetchSong(fetchObject.id);
     }
-  }, [trackID]);
+    else if(fetchObject && fetchObject.type == 'podcast')
+    {
+      FetchPodcast(fetchObject.id)
+    }
+  }, [fetchObject]);
+
+  
+ 
 
   const GetUserDetails = () => {
     return {
@@ -75,6 +97,16 @@ export default function Home() {
     setArtist(artist);
     setImageBlob(imageBlob);
     setTrackID(id);
+    setFetchObject({type:"track",id:id})
+  };
+
+  const PodcastHandler = (name, username, imageBlob, id) => {
+    setLoading(true);
+    setSongName(name);
+    setArtist(username);
+    setImageBlob(imageBlob);
+    setTrackID(id);
+    setFetchObject({type:"podcast",id:id})
   };
 
   const Notify = (notice) => {
@@ -88,7 +120,7 @@ export default function Home() {
 
   if (user) {
     return (
-      <UserContext.Provider value={{ GetUserDetails, SongHandler, Notify }}>
+      <UserContext.Provider value={{ GetUserDetails, SongHandler, Notify,PodcastHandler }}>
         <div
           className={`absolute top-0 p-2 bg-neutral-900 border-2 text-white  left-0 rounded z-10  ${
             noticeActive ? "block" : "hidden"
@@ -111,13 +143,12 @@ export default function Home() {
         </main>
       </UserContext.Provider>
     );
-  }
-  else{
-    return(
+  } else {
+    return (
       <div className="w-full h-screen flex flex-col justify-center items-center">
-        <Loading/>
+        <Loading />
       </div>
-    )
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {RecentlyPlayedCard} from "./Card";
-import { GetRecentlyPlayed,GetLocal } from "@/lib/utilites";
+import { GetTop10 } from "@/lib/utilites";
 import { User } from "@/app/player/page";
 // import MusicPlayer from "./MusicPlayer";
 
@@ -16,20 +16,18 @@ function extractTestValue(inputString) {
   }
 }  
 
-export default function RecentlyPlayed() {
+export default function Top10() {
   const [data,setData] = useState(null)
-  const {GetUserDetails,SongHandler} = User()
-  
-  // const player = new MusicPlayer()
+  const {SongHandler} = User()
 
   useEffect(()=>{
-    const Recent=async ()=>{
-      const uid= GetUserDetails().userID
+    const TopSongs=async ()=>{
       try{
-        const _data = await GetRecentlyPlayed(uid)
+        const _data = await GetTop10()
+        // console.log(_data.result)
         const arr = _data.result
         arr.sort((a,b)=>{
-          return a.order - b.order
+          return b.stream_count - a.stream_count
         })
         setData(arr)
       }
@@ -38,15 +36,14 @@ export default function RecentlyPlayed() {
         console.log(error)
       }
     }
-    const uid= GetUserDetails().userID
-    if(uid)
-    Recent()
-  },[GetUserDetails])
+   
+    TopSongs()
+  },[])
 
   return (
     <div className="flex flex-col justify-center">
       <div className="flex flex-col p-4">
-        <span className="font-bold text-lg">Recent</span>
+        <span className="font-bold text-lg">Popular songs</span>
       </div>
       <div className="grid grid-flow-col justify-start  w-full md:mx-8  gap-4  rounded-lg h-64 no-scrollbar overflow-x-auto">
       {data && data.map((val,ind)=>{

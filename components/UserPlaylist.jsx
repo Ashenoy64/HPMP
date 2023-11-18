@@ -1,13 +1,15 @@
 "use client";
 import React, { useState,useEffect } from "react";
 import { PlaylistCard } from "./Card";
-import { GetUserPlaylist,GetPlaylistInfo } from "@/lib/utilites";
+import { GetUserPlaylist,GetPlaylistInfo, RemoveTrackPlaylist, DeleteMedia } from "@/lib/utilites";
+import { useUser } from "@/app/user/layout";
 
 
 export default function UserPlaylist({details}) {
   const [data,setData] = useState(null)
   const [modalData,setModalData] =  useState()
   const [uid,setUID] = useState()
+  const {Notify} = useUser()
 
   useEffect(()=>{
     const FetchData=async(uid)=>{
@@ -39,6 +41,20 @@ export default function UserPlaylist({details}) {
     setModal(false);
   }
   const DeletePlaylist=async(k)=>{
+    try{
+      const res = await DeleteMedia('playlist',data[k].playlist_id,uid)
+      if(res=='ok')
+      {
+        Notify("Deleted the playlist")
+      }
+      else{
+        Notify("Failed to delete the playlist")
+      }
+    }catch(error)
+    {
+      Notify("Failed to delete the playlist")
+      console.log(error)
+    }
 
   }
 
@@ -57,7 +73,6 @@ export default function UserPlaylist({details}) {
         />
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
-        {/* Use onClick to open the modal */}
         {data  && data.map((val,ind)=>{
           return <PlaylistCard onClick={handleModalOpen} key={ind} primary={val.name} imageBlob={val.image_blob} secondary={val.doc} k={ind} id={val.playlist_id} uid={val.owner_id}  owner={true} deleteHandler={DeletePlaylist}  />
         })}
@@ -67,11 +82,43 @@ export default function UserPlaylist({details}) {
 }
 
 
-function PlaylistSong({ details }) {
+
+function extractTestValue(inputString) {
+  const match = inputString.match(/'([^']*)'/);
+
+  // Check if a match is found
+  if (match) {
+      return match[1];
+  } else {
+      return inputString;
+  }
+} 
+
+function PlaylistSong({ details,playlist_id }) {
   const [imageSrc,setSrc] = useState()
+  const {Notify} = useUser()
+
+  const RemoveSong = async(playlist_id,trackid)=>
+  {
+    try{
+      const res = await RemoveTrackPlaylist(playlist_id,trackid);
+      if(res == "ok")
+      {
+        Notify("Removed the track")
+      }
+      else{
+        Notify("Failed to remove track")
+      }
+
+    }
+    catch(error)
+    { 
+      Notify("Failed to remove track")
+    }
+  }
 
   useEffect(()=>{
-      if(details.image) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
+      if(details.image_blob) setSrc(`data:image/jpeg;base64,${details.image_blob}`);
       else if(details.image_url) setSrc(details.image_url)
       else setSrc('/music.jpg')
     
@@ -82,16 +129,22 @@ function PlaylistSong({ details }) {
         <div className="object-contain">
           <img src={imageSrc} className="w-12 h-12" alt="" />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col">
           <span className="text-sm">{details.name}</span>
-          <span className="text-xs">{details.author}</span>
+          <span className="text-xs">{extractTestValue(details.artist_name)}</span>
+
+          </div>
+          <button className="p-2 object-contain w-8" onClick={(e)=>{e.stopPropagation();RemoveSong(playlist_id,details.track_id)}}>
+            <img src="/minus.png" alt="" />
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-function PlaylistDetails({  onClose,details }) {
+function PlaylistDetails({  onClose,details,uid }) {
   const [data,setData] = useState()
   useEffect(()=>{
     const FetchData = async()=>{
@@ -122,7 +175,7 @@ function PlaylistDetails({  onClose,details }) {
           <hr />
           <div className="flex flex-col gap-1 overflow-y-scroll no-scrollbar h-96">
             { data && data.map((val,k) =>{
-              return <PlaylistSong details={val} key={k}   />
+              return <PlaylistSong details={val} key={k}  playlist_id={details.playlist_id} />
             })}
           </div>
           <button

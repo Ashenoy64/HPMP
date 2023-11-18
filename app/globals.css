@@ -70,3 +70,15 @@ body {
 .shadow-blink {
   animation: blink 1s infinite ease-in-out;
 }
+
+.overflow-ellipsis {
+  display: block;
+  display: -webkit-box;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-line-clamp: 1; /* Limit to one line of text */
+  -webkit-box-orient: vertical;
+}

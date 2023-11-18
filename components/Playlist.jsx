@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { PlaylistCard } from "./Card";
+import { PlaylistCard,PlaylistCardFollowed } from "./Card";
 import PlaylistDetails from "./PlaylistDetails";
 import { GetAllPlaylist,GetUserPlaylist } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
@@ -11,6 +11,8 @@ import { User } from "@/app/player/page";
 export default function Playlist() {
   const [isMakePlaylistOpen, setMakePlaylistModal] = useState(false);
   const [data, setData] = useState(null);
+  const [followed, setFollowed] = useState(null);
+  const [userPlaylist, setPlaylist] = useState(null);
   const [isModalOpen, setModal] = useState(false);
   const [modalData,setModalData] =useState()
   const [uid,setUID] = useState()
@@ -21,9 +23,12 @@ export default function Playlist() {
     const Playlist = async () => {
       const uid = GetUserDetails().userID;
       try {
-        // const _data = await GetAllPlaylist(uid);
-        const _data = await GetUserPlaylist(uid);
-        setData(_data);
+        const _data = await GetAllPlaylist(uid);
+
+        setFollowed(_data.followed)
+        setPlaylist(_data.userPlaylist)
+
+
 
       } catch (error) {
         console.log(error);
@@ -37,8 +42,12 @@ export default function Playlist() {
     }
   }, [GetUserDetails]);
 
-  function handleModalOpen(k) {
-    setModalData(data[k]);
+  function handleModalOpen(k,type) {
+    if(type=='playlist')
+      setModalData(userPlaylist[k]);
+    else
+      setModalData(followed[k])
+  
     setModal(true);
   }
 
@@ -82,8 +91,26 @@ export default function Playlist() {
         />
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
-        {data &&
-          data.map((val, ind) => {
+        {
+          followed && 
+          followed.map((val,ind)=>{
+            return (
+              <PlaylistCardFollowed
+              onClick={handleModalOpen}
+              key={ind}
+              primary={val.name}
+              imageBlob={val.image_blob}
+              secondary={val.username}
+              k={ind} 
+              id={val.playlist_id}
+              uid={uid}
+              />
+
+            )
+          })
+        }
+        {userPlaylist &&
+          userPlaylist.map((val, ind) => {
             return (
               <PlaylistCard
                 onClick={handleModalOpen}

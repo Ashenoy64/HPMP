@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
-import { GetUserDetails, BlobToBase64, HandleFileChange } from "@/lib/utilites";
+import { GetUserDetails, BlobToBase64, HandleFileChange,UpdateUserDetails } from "@/lib/utilites";
 import Loading from "./Loading";
+import { useUser } from "@/app/user/layout";
 
 export default function EditUserDetails({ toggle, details }) {
   const [data, setData] = useState();
@@ -11,7 +12,10 @@ export default function EditUserDetails({ toggle, details }) {
   const [username, setUsername] = useState();
   const [dob, setDob] = useState("");
   const [profile, setProfile] = useState();
+  const [uid,setUid] = useState()
   const [profileName, setProfileName] = useState();
+  const {Notify} = useUser()
+
 
   useEffect(() => {
     const GetUserData = async (uid) => {
@@ -26,8 +30,11 @@ export default function EditUserDetails({ toggle, details }) {
       }
     };
 
-    const uid = details().userID;
-    if (uid) GetUserData(uid);
+    const _uid = details().userID;
+    if (_uid){
+      GetUserData(_uid);
+      setUid(_uid)
+    } 
   }, [details]);
 
   const handleFileChange = async (event) => {
@@ -45,12 +52,21 @@ export default function EditUserDetails({ toggle, details }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email == "" || username == "" || dob == "") return;
+    if (username == "" || dob == "") return;
 
-    const profile = await BlobToBase64(podcastBlob);
+    const _profile = await BlobToBase64(profile);
 
     try {
+      const res = await UpdateUserDetails(uid,_profile,dob,username,email)
+      if(res == 'ok')
+      {
+        Notify("Updated user details")
+      }
+      else{
+        Notify("Failed to update user details")
+      }
     } catch (error) {
+      Notify("Failed to update user details")
       console.log(error);
     }
 
@@ -74,9 +90,9 @@ export default function EditUserDetails({ toggle, details }) {
             <input
               type="email"
               className="p-2 rounded"
-              defaultValue={data.email}
+              value={data.email}
               placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {}}
             />
             <input
               type="date"
