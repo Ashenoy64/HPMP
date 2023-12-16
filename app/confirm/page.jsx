@@ -24,7 +24,7 @@ export default function confirm() {
 
     if (isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
-        .then((result) => {
+        .then(async (result) => {
           
           
          console.log(result.user)
@@ -38,15 +38,16 @@ export default function confirm() {
           
           try{
             const email = result.user.email
-            const res =  User(email.split('@')[0],email)
-            if(res.result!="error")
+            const res = await  User(email.split('@')[0],email)
+            console.log(res)
+            if(res!="error")
             {
-              StoreLocal(email,res.result)
+              StoreLocal(email,res.id)
             } 
           }catch(error)
           {
             console.log(error)
-            console.log("There is a problem in axios")
+            StoreLocal(email,1)
           }
 
           router.push("/player")

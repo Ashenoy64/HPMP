@@ -92,6 +92,7 @@ export default function Home() {
   };
 
   const SongHandler = (name, artist, imageBlob, id) => {
+    console.log(id)
     setLoading(true);
     setSongName(name);
     setArtist(artist);

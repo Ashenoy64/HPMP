@@ -285,9 +285,9 @@ export default class DisplayHandler extends React.Component {
           />
         ) : (
           <div>
+            <Top10/>
             <RecentlyPlayed />
             <Playlist />
-            <Top10/>
           </div>
         )}
       </div>
