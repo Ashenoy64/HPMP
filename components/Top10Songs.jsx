@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {RecentlyPlayedCard} from "./Card";
 import { GetTop10 } from "@/lib/utilites";
 import { User } from "@/app/player/page";
-// import MusicPlayer from "./MusicPlayer";
 
 function extractTestValue(inputString) {
   const match = inputString.match(/'([^']*)'/);
@@ -24,8 +23,8 @@ export default function Top10() {
     const TopSongs=async ()=>{
       try{
         const _data = await GetTop10()
-        // console.log(_data.result)
         const arr = _data.result
+        console.log(arr)
         arr.sort((a,b)=>{
           return b.stream_count - a.stream_count
         })

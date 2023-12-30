@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
@@ -12,9 +12,6 @@ export default function confirm() {
   const [noticeActive, setNoticeActive] = useState(false);
   
   const router=useRouter()
-
-
-  
 
 
 

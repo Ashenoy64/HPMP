@@ -45,8 +45,6 @@ export function RecentlyPlayedCard({
   imageBlob,
   primary,
   secondary,
-  onClick,
-  uid,
   type,
   id,
   player,

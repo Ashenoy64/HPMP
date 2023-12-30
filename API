@@ -1,0 +1,230 @@
+1. Adding user
+
+POST:/addUser
+body:
+{
+    email:<email>,
+    userName:<text>,
+}
+
+Response
+{
+    userID:<int>,
+    message:<text>
+}
+
+What to do:
+Check the database if the user already exists, if he exist get the id and return
+else add the user and send the id of the user
+
+
+2. GET: /userDetails
+body:
+{
+    userID:<int>
+}
+Response:
+{
+    profile:<BLOB>
+    dob:<date>
+    userName:<text>
+    email:<email>
+    message:<text>
+}
+What to do: get all the details of a single user based on id
+
+
+3. POST:/updateUserDetails
+
+body:
+{
+    profile:<png/jpg>
+    dob:<date>
+    userName:<text>
+    email:<email>
+    userID:<int>
+}
+Response
+{
+    message:<text>
+}
+
+what to do: update the already existing user details except the user id
+
+4. POST:/uploadPodcast
+
+body:
+{
+    image:<png/jpg>
+    podcast:<mp4>
+    name:<text>
+    userID:<int>
+    doc:<date>
+}
+
+Response:
+{
+    message:<text>
+}
+
+what to do: get the duration of thr podcast,convert the files into binary put it 
+to the database 
+
+5. GET:/getUserPlaylist
+body{
+    userID:<int>
+}
+Response
+{
+    userPlaylist:[
+        {
+            image:<BLOB>
+            name:<text>
+            doc:<date>
+            id:<int>
+        },
+        ...
+    ],
+    message:<text>
+}
+
+what to do: retrive all the playlist that the user made,(user must be the owner of the playlist)
+
+
+6. GET:/getUserPodcast
+body{
+    userID:<int>
+}
+Response
+{
+    userPodcast:[
+        {
+            image:<BLOB>
+            name:<text>
+            doc:<date>
+            id:<int>
+        },
+        ...
+    ],
+    message:<text>
+}
+
+what to do: retrive all the podcast of the  user made
+
+7. GET:/deleteUserMedia
+body
+{
+    mediaType:<podcast/playlist>
+    idOfMedia:
+}
+
+Response
+{
+    message:<text>
+}
+
+
+what to do: 
+if its a podcast delete it from the table
+if its a playlist then delete the entries from the playlist and the user_playlist table
+
+
+8. GET:/getRecentlyPlayed
+body
+{
+    userID:<int>
+}
+
+Response:{
+    recentlyPlayed:[
+        {
+            image:<BLOB>,
+            name:<text>,
+            artist:<text>,
+            trackID:<int>
+        },
+        ...
+    ]
+}
+
+what to do: the array must be sorted based on the order field
+
+9. GET:/getPlaylist
+body{
+    userID:<int>
+}
+Response
+{
+    playlist:[
+        {
+            image:<BLOB>
+            name:<text>
+            ownerName:<text>
+            id:<int>
+        },
+        ...
+    ],
+    message:<text>
+}
+
+what to do: retrive all the playlist that the user made,(user must be the owner of the playlist)
+
+10. GET:/searchPartial
+
+body:
+{
+    type:<song,album,podcast,playlist>
+    name:<text>
+}
+
+Response:{
+    result:[
+        {
+            image:<BLOB>/(NULL)
+            imageURL:<URL>
+            artist:<text>
+            id:<int>
+        },
+        ...
+    ]
+}
+
+11.Get: /searchDetails
+{
+    type:<song,album,podcast,playlist>
+    id:<int>
+}
+
+if (playlist,album)
+Response:{
+    result:[
+        {
+            image:<BLOB>/(NULL)
+            imageURL:<URL>
+            artist:<text>
+            id:<int>
+        },
+        ...
+    ]
+}
+else
+Response:
+{
+    podcast/track:<BLOB>
+    image:<BLOB>
+    name:<text>
+    artist/owner:<text>
+}
+
+
+12: GET:/addSong
+body:{
+    userID:<int>
+    playlistID:<int>
+    trackID:<int>
+}
+
+Response:
+{
+    message:<text>
+}
