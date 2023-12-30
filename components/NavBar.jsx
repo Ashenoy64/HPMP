@@ -5,20 +5,21 @@ import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+
+
 export default function NavBar() {
   const router = useRouter();
 
   const handleRoute = (path) => {
     router.push(path);
   };
-
+  const [username,setUserName]=useState("")
   const [user, setUser] = useState("");
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
         setUser(user);
-        // ...
+        setUserName(user.email.split('@')[0])
       }
     });
   }, []);
@@ -29,7 +30,7 @@ export default function NavBar() {
   };
 
   return (
-    <div className="flex flex-row w-full justify-between p-2 ">
+    <div className="flex flex-row w-full justify-between p-2 items-center ">
       <div className="text-xl font-bold relative inline-block">
         <span className="bg-gradient-to-r from-orange-500 to-green-500 text-transparent bg-clip-text animate-slide-text shadow-blink">
           HPMP
@@ -39,15 +40,15 @@ export default function NavBar() {
         <Search />
       </div>
       <div>
-        <div className="hidden md:flex space-x-6">
-          <div className="font-medium text-md text-white"> {user.email}</div>
+        <div className="hidden md:flex space-x-6 items-center">
+          <div className="font-medium text-md text-white capitalize"> {username}</div>
           <button
             onClick={() => {
               handleRoute("/user");
             }}
             className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
           >
-            Profile
+            Playlist
           </button>
 
           <button
@@ -110,7 +111,7 @@ export default function NavBar() {
         {isMobileMenuOpen && (
           <div className="md:hidden top-16 right-0 left-0 z-10">
             <div className=" flex flex-col gap-2 p-2 justify-end text-right ">
-              <div className="font-semibold text-md">{user.email}</div>
+              <div className="font-semibold text-md capitalize">{username}</div>
               <div>
                 <button
                   onClick={() => {
@@ -118,7 +119,7 @@ export default function NavBar() {
                   }}
                   className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
                 >
-                  Profile
+                  Playlist
                 </button>
               </div>
               <div className="">

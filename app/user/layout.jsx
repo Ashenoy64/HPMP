@@ -55,7 +55,7 @@ export default function Layout({ children }) {
           {notice}
         </div>
 
-        <div className="flex flex-col sm:flex-row h-auto sm:h-screen w-full">
+        <div className="flex flex-col h-auto sm:h-screen w-full">
           <SideBar />
           <div className="p-2 w-full">{children}</div>
         </div>

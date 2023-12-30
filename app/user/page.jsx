@@ -1,23 +1,12 @@
 "use client";
-
-import React,{useState} from "react";
-import UserDetails from "@/components/UserDetails";
-import EditUserDetails from "@/components/EditUserDetails";
+import UserPlaylist from "@/components/UserPlaylist";
 import { useUser } from "./layout";
 
-export default function User() {
-  const [edit,setEdit] = useState(false)
+export default function Media() {
   const {GetUserDetails} =useUser()
-  
-  const handleToggle=()=>{
-    setEdit(!edit)
-  }
-
-
   return (
-  <div className=" w-full h-full flex flex-col justify-center items-center">
-    {
-      edit ? <EditUserDetails toggle={handleToggle} details={GetUserDetails} /> : <UserDetails toggle={handleToggle} details={GetUserDetails}/>
-    }
-  </div>);
+  <div className="w-full h-full flex flex-col justify-center items-center">
+        <UserPlaylist details={GetUserDetails} />
+  </div>
+  );
 }

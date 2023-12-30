@@ -27,7 +27,6 @@ export default function confirm() {
         .then(async (result) => {
           
           
-         console.log(result.user)
          
           setNotice(result.user.email);
           setNoticeActive(true);

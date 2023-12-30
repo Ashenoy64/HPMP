@@ -14,30 +14,13 @@ export default function SideBar() {
     }
 
     return (
-        <div className="flex flex-row w-auto sm:w-44 sm:flex-col gap-1 sm:gap-5 bg-neutral-800 h-full p-1 sm:p-4 justify-center sm:justify-normal text-black ">
+        <div className="flex flex-row w-auto p-4  gap-1 sm:gap-5 bg-neutral-800justify-center sm:justify-normal text-black ">
+        
             <button
-                className={`rounded p-1 sm:p-2 text-center text-md md:text-lg w-12-h-8 bg-green-400 ${path === '/user' ? 'shadow-[0_0_5px_1px_rgba(_255,_255,_255,_0.7)] font-semibold' : ''}`}
-                onClick={() => handleClick('/user')}
-            >
-                Profile
-            </button>
-            <button
-                className={`rounded p-1 sm:p-2 text-center text-md md:text-lg bg-green-400  ${path === '/user/upload' ? ' shadow-[0_0_5px_1px_rgba(_255,_255,_255,_0.7)] font-semibold' : ''}`}
-                onClick={() => handleClick('/user/upload')}
-            >
-                Podcast
-            </button>
-            <button
-                className={`rounded p-1 sm:p-2 text-center text-md md:text-lg w-12-h-8 bg-green-400 ${path === '/user/media' ? 'shadow-[0_0_5px_1px_rgba(_255,_255,_255,_0.7)] font-semibold' : ''}`}
-                onClick={() => handleClick('/user/media')}
-            >
-                Media
-            </button>
-            <button
-                className={`rounded p-1 sm:p-2 text-center text-md md:text-lg w-12-h-8 bg-green-400 ${path === '/player' ? ' shadow-[0_0_5px_1px_rgba(_255,_255,_255,_0.7)] font-semibold' : ''}`}
+                className={`rounded p-2 bg-neutral-900 text-white   hover:shadow-[0_0_5px_1px_rgba(_255,_255,_255,_0.7)] font-semibold ${path === '/player' ? '' : ''}`}
                 onClick={() => handleClick('/player')}
             >
-                Player
+                Back
             </button>
         </div>
     );
