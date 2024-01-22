@@ -1,83 +1,148 @@
 "use client";
-import React, { useEffect } from "react";
-import { useRef, useState } from "react";
-
-import { auth } from "@/lib/firebase";
-import { sendSignInLinkToEmail,onAuthStateChanged } from "firebase/auth";
+import React, {useState  } from "react";
 import { useRouter } from "next/navigation";
-
-
+import { UserSignup } from "@/lib/utilites";
 
 
 export default function landing() {
-  
+  const router = useRouter();
+
   const [notice, setNotice] = useState("");
-  const router=useRouter()
   const [noticeActive, setNoticeActive] = useState(false);
-  const [email,setEmail]=useState("")
-  const actionCodeSettings = {
-    url: "http://localhost:3000/confirm",
-    handleCodeInApp: true,
+
+  const [email, setEmail] = useState("");
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState();
+
+  const [loading,setLoading] = useState(false)
+
+
+  const Notify = (notice) => {
+    setNotice(notice);
+    setNoticeActive(true);
+
+    setTimeout(() => {
+      setNoticeActive(false);
+    }, 3000);
   };
-  
-  useEffect(()=>{
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.push("/player")
-        // ...
-      } 
-    }); 
-  },[])
+
   
 
-  //Send login link
-  const handleSubmit = (event) => {
-    event.preventDefault();
+
+  const validatePassword=()=>{
+    if(password.length<6)
+    {
+      Notify("Password should be atleast 6 character long.")
+      
+      return false
+    }
+    if(password !=confirmPassword)
+    {
+      Notify("Password doesnt match!")
+      
+      return false
+    }
+
+    return true
     
-    sendSignInLinkToEmail(auth, email, actionCodeSettings)
-      .then(() => {
-        setNotice(
-          "An email was sent to your email address. Click the link in the email to login."
-        );
-        setNoticeActive(true)
-        setTimeout(()=>{
-          setNoticeActive(false)
-        },3000)
+  }
 
-      })
-      .catch((error) => {
-        console.log(error);
-        setNotice(
-          "An error occurred when sending a login link to your email address: ",
-          error.name
-        );
-        setNoticeActive(true)
+  const RouteLogin = ()=>{
+    return router.push('/login')
+  }
 
-        setTimeout(()=>{
-          setNoticeActive(false)
-        },9000)
-      });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true)
+    if(validatePassword())
+    {
+      const response = await UserSignup(username,email,password)
+
+      if(response.status == "ok")
+      {
+        Notify("You have been Registered Successfully!")
+        RouteLogin()
+        
+      }
+      else{
+        Notify(response.data)
+      }
+    }
+      setLoading(false)
   };
 
   return (
     <div className=" flex flex-col items-center justify-center h-screen">
-      <div className={`absolute top-0 p-2 bg-orange-100 text-black left-0  ${noticeActive?'block':'hidden'} `}>{notice}This is a notice</div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-neutral-800 p-4 shadow-[0_0_20px_5px_rgba(0,_112,_184,_0.7)] ">
-        <label className="text-center p-2 font-bold  text-orange-500 text-xl">Sign In</label>
+      
+      <div
+        className={` w-1/4 absolute left-1 top-1 toast toast-top toast-start alert alert-info ${
+          noticeActive ? "block" : "hidden"
+        } `}
+      >
+        {notice}
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-neutral-800 p-4 shadow-[0_0_20px_5px_rgba(0,_112,_184,_0.7)]  "
+      >
+        <label className="text-center p-2 font-bold  text-orange-500 text-xl">
+          Sign In
+        </label>
         <input
           type="text"
           name="email"
           placeholder="Email"
-          className="text-black rounded-md p-2 "
+          className="rounded-md p-2 input input-bordered"
           onChange={(e) => {
             setEmail(e.target.value);
           }}
           value={email}
+          required
         />
-        <button type="submit" className="p-2 rounded-md bg-slate-600 font-bold">Submit</button>
+
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          className="rounded-md p-2 input input-bordered "
+          onChange={(e) => {
+            setUserName(e.target.value);
+          }}
+          value={username}
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          className="rounded-md p-2 input input-bordered "
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          required
+        />
+
+        <input
+          type="password"
+          name="confirmPassowrd"
+          placeholder="Confirm Password"
+          className="rounded-md p-2 input input-bordered "
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+          }}
+          required
+        />
+
+        <button type="submit" className="btn rounded-md bg-slate-600 font-bold text-white">
+            {loading?<span className="loading text-warning loading-infinity loading-lg"></span>:"Submit"}
+        </button>
+        <div className="w-full text-center text-sm hover:underline" onClick={RouteLogin}>Already have an Account?</div>
       </form>
+
     </div>
-  );  
-  }
-
-
+  );
+}
