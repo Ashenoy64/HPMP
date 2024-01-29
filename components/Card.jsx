@@ -45,29 +45,18 @@ export function RecentlyPlayedCard({
   imageBlob,
   primary,
   secondary,
-  type,
-  id,
+  details,
   player,
 }) {
   return (
     <div
       className="flex flex-col  bg-neutral-800  rounded-lg w-40 h-56 transition-shadow hover:shadow-white hover:shadow-sm "
       onClick={() => {
-        player(primary, secondary, imageBlob, id);
+        player(details);
       }}
     >
       <div className="w-32 h-32 object-contain m-auto">
-        {type == "url" ? (
-          <img src={imageBlob} className=" w-32 h-32" />
-        ) : (
-          <ImageComponent
-            blob={imageBlob}
-            width={128}
-            height={128}
-            alt=""
-            className=" w-32"
-          />
-        )}
+        <img src={imageBlob} alt="Image" />
       </div>
       <div className="w-32 m-auto over">
         <p className="font-semibold truncate">{primary}</p>
@@ -150,7 +139,7 @@ export function PlaylistCard({
   const [src, setSrc] = useState();
   useEffect(() => {
     if (imageBlob) {
-      setSrc(`data:image/jpeg;base64,${imageBlob}`);
+      setSrc(imageBlob);
     } else {
       setSrc("/playlistCover.jpg");
     }

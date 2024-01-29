@@ -58,17 +58,24 @@ export default function landing() {
     setLoading(true)
     if(validatePassword())
     {
-      const response = await UserSignup(username,email,password)
+      try{
+        const response = await UserSignup(username,email,password)
 
-      if(response.status == "ok")
+        if(response.status == "ok")
+        {
+          Notify("You have been Registered Successfully!")
+          RouteLogin()
+          
+        }
+        else{
+          Notify(response.data)
+        }
+      }
+      catch(error)
       {
-        Notify("You have been Registered Successfully!")
-        RouteLogin()
-        
+        Notify("Something Went Wrong!") 
       }
-      else{
-        Notify(response.data)
-      }
+      
     }
       setLoading(false)
   };

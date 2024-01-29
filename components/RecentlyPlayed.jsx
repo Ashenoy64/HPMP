@@ -26,11 +26,9 @@ export default function RecentlyPlayed() {
     const Recent=async ()=>{
       const uid= GetUserDetails().userID
       try{
-        const _data = await GetRecentlyPlayed(uid)
-        const arr = _data.result
-        arr.sort((a,b)=>{
-          return a.order - b.order
-        })
+        const arr = await GetRecentlyPlayed(uid)
+        
+        arr.reverse()
         setData(arr)
       }
       catch(error)
@@ -48,9 +46,9 @@ export default function RecentlyPlayed() {
       <div className="flex flex-col p-4">
         <span className="font-bold text-lg">Recent</span>
       </div>
-      <div className="grid grid-flow-col justify-start  w-full md:mx-8  gap-4  rounded-lg h-64 no-scrollbar overflow-x-auto">
+      <div className="grid grid-flow-col justify-start  w-full md:mx-8  gap-4  rounded-lg h-64 no-scrollbar overflow-x-scroll object-contain">
       {data && data.map((val,ind)=>{
-        return <RecentlyPlayedCard key={ind} primary={val.name} secondary={extractTestValue(val.artist_name)} imageBlob={val.image_blob} type={"track"} id={val.track_id} player={SongHandler} />
+        return <RecentlyPlayedCard key={ind} primary={val.title} secondary={val.artist_names[0]} imageBlob={val.image_url} details={val} player={SongHandler} />
       })}
       </div>
     </div>

@@ -2,62 +2,59 @@
 import Loading from "./Loading";
 import React, { useEffect, useState, useRef } from "react";
 
-
 export function MusicPlayerV2({
   name,
   artist,
-  audioBlob,
-  imageBlob,
+  audioUrl,
+  imageUrl,
   forward,
-  loading,
+  backward,
 }) {
   const [volume, setVolume] = useState(0.5);
   const [imageSrc, setImageSrc] = useState();
   const [audioSrc, setAudioSrc] = useState(null);
   const [progress, setProgress] = useState(0);
-
+  const [loading, setLoading] = useState(false);
   const [play, setPlay] = useState(false);
   const audioRef = useRef(null);
   const progressRef = useRef(null);
 
   useEffect(() => {
-    if (imageBlob) setImageSrc(`data:image/jpeg;base64,${imageBlob}`);
+    if (imageUrl) setImageSrc(imageUrl);
     else setImageSrc("/music.jpg");
-  }, [imageBlob]);
-  
-  useEffect(() => {
-    
-      
-      pauseAudio()
-      setProgress(0)
-      if(audioBlob)
-      { 
-        setAudioSrc(`data:audio/wav;base64,${(audioBlob)}`)
-      }
-      else{
-        setAudioSrc(`/song.mp3`)
-      }
-  }, [audioBlob]);
+  }, [imageUrl]);
 
-  useEffect(()=>{
-  if(audioSrc && name)
-  playAudio()    
-  },[audioSrc])
+  useEffect(() => {
+    pauseAudio();
+    setProgress(0);
+    if (audioUrl) {
+      setLoading(true);
+      setAudioSrc(audioUrl);
+    }
+    playAudio();
+  }, [audioUrl]);
+
+  useEffect(() => {
+    if (audioSrc && name) playAudio();
+  }, [audioSrc]);
 
   const handleSeekForward = () => {
     if (audioRef.current) {
-      audioRef.current.currentTime += 5; // Seek forward by 5 seconds
+      forward(audioRef.current);
     }
   };
 
   const handleSeekBackward = () => {
     if (audioRef.current) {
-      audioRef.current.currentTime -= 5; // Seek backward by 5 seconds
+      backward(audioRef.current);
     }
   };
 
   useEffect(() => {
     const updateProgress = () => {
+      if (!loading && audioRef.current.currentTime>0) {
+        setLoading(false);
+      }
       if (audioRef.current && progressRef.current) {
         const percentage =
           (audioRef.current.currentTime / audioRef.current.duration) * 100;
@@ -75,12 +72,10 @@ export function MusicPlayerV2({
         audioRef.current.removeEventListener("timeupdate", updateProgress);
       }
     };
-  }, [audioRef, audioBlob, progressRef]);
-
-
+  }, [audioRef, audioUrl, progressRef]);
 
   const playAudio = () => {
-    if (audioRef.current) {
+    if (audioRef.current && audioUrl) {
       setPlay(true);
       audioRef.current.play();
     }
@@ -94,22 +89,24 @@ export function MusicPlayerV2({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 bg-emerald-600 text-white w-full">
-      <div className="flex flex-row justify-between">
+    <div className="fixed bottom-0 left-0 right-0 p-4 bg-emerald-600 text-white w-full no-scrollbar">
+      <div className="grid grid-cols-3 w-full justify-between">
         <div className="flex flex-row gap-4">
           <div className="w-14 h-12 overflow-hidden object-contain">
             <img src={imageSrc} alt="" className="w-14 h-12" />
           </div>
-          <div className="sm:flex flex-col hidden ">
-            <div className="font-semibold text-white text-lg">{name}</div>
+          <div className="sm:flex flex-col hidden w-full  overflow-hidden ">
+            <div className="font-semibold text-white w-full line-clamp-1 text-lg">
+              {name}
+            </div>
             <div className="text-xs">{artist}</div>
           </div>
         </div>
-        <div className="w-2/4">
-          <div className="flex flex-col gap-2">
+        <div className="w-full">
+          <div className="flex flex-col gap-2 justify-center">
             <audio id="player" ref={audioRef} src={audioSrc}></audio>
             <div className="flex flex-row justify-center gap-4">
-              <button className="w-8 h-8" onClick={() =>handleSeekBackward()}>
+              <button className="w-8 h-8" onClick={() => handleSeekBackward()}>
                 <img src="/backward.png" alt="" className="w-7 h-7" />
               </button>
               {loading ? (
@@ -138,7 +135,7 @@ export function MusicPlayerV2({
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-5 my-auto">
+        <div className="flex flex-row gap-5 my-auto justify-end px-4">
           <div className="flex flex-row my-auto">
             <div className="w-6 h-6">
               <img src="/volume.png" className="w-6 h-6" alt="" />

@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({ children }) {
 
   return (
-    <html lang="en">
+    <html lang="en" className='no-scrollbar overflow-x-hidden'>
       <body className={`${inter.className} bg-background text-text-primary font-inter no-scrollbar `}>
 
         

@@ -1,114 +1,44 @@
 "use client";
-import  { MusicPlayerV2 } from "@/components/MusicPlayer";
+import { MusicPlayerV2 } from "@/components/MusicPlayer";
 import Modal from "@/components/ModalViewer";
 import NavBar from "@/components/NavBar";
 import DisplayHandler from "@/components/DisplayHandler";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import Loading from "@/components/Loading";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useContext, createContext } from "react";
-import { GetLocal, SetRecentlyPlayed } from "@/lib/utilites";
-import { GetSong,GetPodcast } from "@/lib/utilites";
-import Loading from "@/components/Loading";
+
+
+
+import {
+  GetSong,
+  SessionRetrive,
+  SetRecentlyPlayed,
+  ValidateUser,
+} from "@/lib/utilites";
 
 const UserContext = createContext();
 
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [userID, setUserID] = useState(null);
+  const [user, setUser] = useState(" ");
+  const [userID, setUserID] = useState("B1ypupFPJ7ff0aT2dYv7r4VDh2E2");
+  const [token, setToken] = useState(
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IjViNjAyZTBjYTFmNDdhOGViZmQxMTYwNGQ5Y2JmMDZmNGQ0NWY4MmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaHBtcC05YTc0NSIsImF1ZCI6ImhwbXAtOWE3NDUiLCJhdXRoX3RpbWUiOjE3MDY0MjIwODcsInVzZXJfaWQiOiJCMXlwdXBGUEo3ZmYwYVQyZFl2N3I0VkRoMkUyIiwic3ViIjoiQjF5cHVwRlBKN2ZmMGFUMmRZdjdyNFZEaDJFMiIsImlhdCI6MTcwNjQyMjA4NywiZXhwIjoxNzA2NDI1Njg3LCJlbWFpbCI6ImFzaGVub3k2NEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYXNoZW5veTY0QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.jxOw5_vzAAm2OYUOBdZnoYcWRjztfTmn1veJCoFTO0oje2YnV0YjH1JfgooqOyYD346_LqLdX12wltIr81_xkymR2KRwv7ypbP-QYn_YrX2GrI9Rge5F_deb1RLSMMT1aHmmEHvdt_ykhOOKxeFBX2BSNqIJs5w8C-saFusQvam3Y1eLYBnDd5mouVgaTunxX34FiGza6vV_5PSnN_0ZdGfnMBCcfPaQmsPFNasbwbl5Y1779CmDJHWUMPpfZwHf1kAjowS4Wb9Ii5atGLdA6lJYPADhBKhr97xI1nh_knqp2T0E28owXe667neg6CHDxaQ3Js3BBAoX-_zXS9VVww"
+  );
+
   const [songName, setSongName] = useState("");
   const [artist, setArtist] = useState("");
   const [imageBlob, setImageBlob] = useState(null);
-  const [audioBlob, setAudioBlob] = useState(null);
   const [trackID, setTrackID] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState(null);
+  const [details, setDetails] = useState(null);
+
   const [notice, setNotice] = useState("");
+
   const [noticeActive, setNoticeActive] = useState(false);
-  const [fetchObject,setFetchObject] = useState({})
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const id = GetLocal(user.email);
-        setUserID(id);
-        setUser(user);
-      } else {
-        router.push("/");
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    const UpdateRecentlyPlayed = async (trackID, userID) => {
-      try {
-        const res = await SetRecentlyPlayed(userID,trackID);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const FetchSong = async (trackID) => {
-      try {
-        const _data = await GetSong(trackID);
-        setAudioBlob(_data.audio_blob)
-        await UpdateRecentlyPlayed(trackID, userID);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-
-    const FetchPodcast = async (podcastID) => {
-      try {
-        const _data = await GetPodcast(podcastID);
-        console.log(_data)
-        setAudioBlob(_data.audio_blob);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-
-
-
-    if (fetchObject && fetchObject.type == 'track') {
-      FetchSong(fetchObject.id);
-    }
-    else if(fetchObject && fetchObject.type == 'podcast')
-    {
-      FetchPodcast(fetchObject.id)
-    }
-  }, [fetchObject]);
-
-  
- 
-
-  const GetUserDetails = () => {
-    return {
-      userID,
-      user,
-    };
-  };
-
-  const SongHandler = (name, artist, imageBlob, id) => {
-    console.log(id)
-    setLoading(true);
-    setSongName(name);
-    setArtist(artist);
-    setImageBlob(imageBlob);
-    setTrackID(id);
-    setFetchObject({type:"track",id:id})
-  };
-
-  const PodcastHandler = (name, username, imageBlob, id) => {
-    setLoading(true);
-    setSongName(name);
-    setArtist(username);
-    setImageBlob(imageBlob);
-    setTrackID(id);
-    setFetchObject({type:"podcast",id:id})
-  };
+  const [playlist, setPlaylist] = useState([]);
+  const [index, setIndex] = useState(-1);
 
   const Notify = (notice) => {
     setNotice(notice);
@@ -119,25 +49,130 @@ export default function Home() {
     }, 3000);
   };
 
+  useEffect(() => {
+    const token = SessionRetrive("accessToken");
+    if (!token) {
+      return router.push("/login");
+    }
+
+    const AuthenticateUser = async () => {
+      try {
+        const response = await ValidateUser(token);
+        console.log(response);
+        if (response.status == "ok") {
+          Notify("Welcome " + response.data.email);
+          setUser(response.data);
+
+        } else {
+          Notify("Something went wrong");
+          router.push("/login");
+        }
+      } catch (error) {
+        Notify("Something went wrong");
+        router.push("/login");
+      }
+    };
+
+    // AuthenticateUser()
+  }, []);
+
+  useEffect(() => {
+    const UpdateRecentlyPlayed = async (userID, details) => {
+      try {
+        const res = await SetRecentlyPlayed(userID, details);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (userID && details) UpdateRecentlyPlayed(userID, details);
+  }, [trackID]);
+
+  const GetUserDetails = () => {
+    return {
+      userID,
+      user,
+    };
+  };
+
+  const SongHandler = (details) => {
+      setPlaylist(null)
+      return UpdatePlayer(details)
+  };
+
+
+  const UpdatePlayer=(details)=>{
+
+    setSongName(details.title);
+    setArtist(details.artist_names[0]);
+    setImageBlob(details.image_url);
+    setTrackID(details.id);
+    setUrl(details.song_url);
+    setDetails(details);
+
+  }
+
+  const GetPlaylistSong=async(id)=>{
+    try{
+      const res = await GetSong(id);
+      return UpdatePlayer(res.data)
+    }
+    catch(error){
+      console.log(error)
+      Notify("Something Happend While playing song")
+    }
+  }
+
+  const SetPlaylist = (details) => {
+
+    setPlaylist(details)
+    setIndex(0)
+    GetPlaylistSong(details[0])
+
+  };
+
+  const PlayNext = (audioRef) => {
+      if(playlist)
+      {
+        setUrl("")
+        GetPlaylistSong(playlist[(index+1)%playlist.length])
+        setIndex(index+1);
+
+      }
+      else
+     audioRef.currentTime += 5;
+  };
+
+  const PlayPrevious = (audioRef) => {
+    if(playlist)
+    {
+      setUrl("")
+      GetPlaylistSong(playlist[(index-1+playlist.length)%playlist.length])
+      setIndex(index-1+playlist.length);
+    }
+    else
+    audioRef.currentTime -= 5;
+  };
+
   if (user) {
     return (
-      <UserContext.Provider value={{ GetUserDetails, SongHandler, Notify,PodcastHandler }}>
+      <UserContext.Provider value={{ GetUserDetails, SongHandler, Notify, SetPlaylist}}>
         <div
-          className={`absolute top-0 p-2 bg-neutral-900 border-2 text-white  left-0 rounded z-10  ${
+          className={`absolute top-0 p-2 bg-neutral-900 border-2 text-white  left-0 rounded z-10 no-scrollbar ${
             noticeActive ? "block" : "hidden"
           } `}
         >
           {notice}
         </div>
-        <main>
+        <main className="no-scrollbar">
           <Modal />
           <MusicPlayerV2
             name={songName}
             artist={artist}
-            imageBlob={imageBlob}
-            forward={null}
-            audioBlob={audioBlob}
-            loading={loading}
+            imageUrl={imageBlob}
+            forward={PlayNext}
+            backward={PlayPrevious}
+            audioUrl={url}
           />
           <NavBar />
           <DisplayHandler />

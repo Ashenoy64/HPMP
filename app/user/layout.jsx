@@ -1,17 +1,17 @@
 "use client";
 import SideBar from "@/components/SideBar";
 import { useState, useEffect, createContext, useContext } from "react";
-import { GetLocal } from "@/lib/utilites";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { SessionRetrive } from "@/lib/utilites";
 const UserContext = createContext();
 
 export default function Layout({ children }) {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [userID, setUserID] = useState(null);
+  const [user, setUser] = useState(" ");
+  const [userID, setUserID] = useState("B1ypupFPJ7ff0aT2dYv7r4VDh2E2");
   const [notice, setNotice] = useState("");
   const [noticeActive, setNoticeActive] = useState(false);
 
@@ -19,7 +19,7 @@ export default function Layout({ children }) {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const id = GetLocal(user.email);
+        const id = SessionRetrive(user.email);
         setUserID(id);
         setUser(user);
       } else {

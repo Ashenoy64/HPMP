@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
 import Top10 from "@/components/Top10Songs";
-import {ViewerPlaylist,ViewerSong,ViewerAlbum} from "./SongsToPlaylist";
-import ImageComponent,{PodcastImage} from "./Image";
+import {ViewerSong} from "./SongsToPlaylist";
+import ImageComponent from "./Image";
 import { SearchRequest,FollowPlaylist } from "@/lib/utilites";
 import { User } from "@/app/player/page";
 let _intance = null;
@@ -29,7 +29,8 @@ function extractTestValue(inputString) {
 
 function SearchComp({ details,type }) {
   const [isModalOpen,setModalOpen] =  useState(false);
-  const {SongHandler,GetUserDetails,Notify,PodcastHandler} =  User()
+  const {SongHandler,GetUserDetails,Notify} =  User()
+
   function handleModalClose(e) {
       setModalOpen(false);
     }
@@ -40,44 +41,27 @@ function SearchComp({ details,type }) {
       setModalOpen(true)
     }
 
-    const FollowPlayList=async(e)=>{
-      e.stopPropagation()
-      const uid = GetUserDetails().userID
-      try{
-        const res= await FollowPlaylist(uid,details.playlist_id)
-        if(res == 'ok')
-        Notify("Playlist followed")
-        else
-        Notify("Unable to follow playlist")
-      }catch(error)
-      { 
-        Notify("Unable to follow playlist")
-        console.log(error)
-      }
-    }
-
+    
     return (
-      <div className="mx-auto flex flex-row justify-between rounded h-16 w-56  bg-neutral-800 p-2" onClick={(e)=>{type=='playlist'||type=="album"?handleModalOpen(e):""}}>
-        { isModalOpen && (type=='playlist') ? <ViewerPlaylist details={details} type={type} onClose={handleModalClose}/> : "" }
-        { isModalOpen && (type=='album') ? <ViewerAlbum details={details} type={type} onClose={handleModalClose}/> : "" }
-        { isModalOpen && (type=='track') ? <ViewerSong details={details} type={type} songID={details.track_id} onClose={handleModalClose}/> : "" }
+      <div className="mx-auto flex flex-row justify-between rounded w-full h-24 items-center  bg-neutral-800 p-2">
+        { isModalOpen ? <ViewerSong details={details} type={type} songID={details.id} onClose={handleModalClose}/> : "" }
         <div className="flex flex-row gap-4">
-          <div className="object-contain">
-            {type == 'podcast'?<PodcastImage blob={details.image_blob} height={24} width={24} />:<ImageComponent blob={details.image_blob} height={48} width={48} />}
+          <div className="object-contain w-16 h-16">
+            <ImageComponent blob={details.image_url} />
           </div>
           <div className="flex flex-col">
-            <span className="text-md overflow-hidden">{type=="album"?details.album_name:details.name}</span>
-            <span className="text-sm">{type=='track' || type =="album"?extractTestValue(details.artist_name):details.username}</span>
+            <span className="text-md overflow-hidden line-clamp-1">{details.title}</span>
+            <span className="text-sm line-clamp-1">{details.artist_names[0]}</span>
           </div>
         </div>
         <div className="flex flex-row items-center h-full gap-3">
-          {(type=='track' || type == "playlist")&&
-          <button className="object-contain w-4 h-4" onClick={(e)=>{type == 'track'?handleModalOpen(e):FollowPlayList(e)}}>
+          
+          <button className="object-contain w-4 h-4" onClick={(e)=>{handleModalOpen(e)}}>
             <img src="/plus.png" className="w-4 h-4" alt="" />
-          </button>}
-          {(type=='track' || type=='podcast') && <button className="object-contain w-4 h-4" onClick={(e)=>{e.stopPropagation();type=='track'?SongHandler(details.name,extractTestValue(details.artist_name),details.image_blob,details.track_id):PodcastHandler(details.name,details.username,details.image_blob,details.podcast_id)}}>
+          </button>
+           <button className="object-contain w-4 h-4" onClick={(e)=>{e.stopPropagation();SongHandler(details)}}>
             <img src="/play.png" className="w-4 h-4" alt="" />
-          </button>}
+          </button>
         </div>
       </div>
     );
@@ -87,7 +71,7 @@ function SearchComp({ details,type }) {
 
 function SearchResult({result,onSearchClose,type})
 {
-  // console.log(type)
+
   return(
   <div className="flex flex-col justify-center gap-4">
     <div className="flex flex-row justify-between ">
@@ -148,8 +132,7 @@ export default class DisplayHandler extends React.Component {
         this.setState({ query, type });
         if (this.state.result && this.state.result.length > 0) {
           const filteredArray = this.state.result.filter((obj) =>
-            obj.name ? obj.name.toLowerCase().includes(query.toLowerCase()):obj.album_name?obj.album_name.toLowerCase().includes(query.toLowerCase()):true
-          );
+             obj.title.toLowerCase().includes(query.toLowerCase()))
           this.setState({ displayContent: filteredArray });
         }
       }
@@ -159,9 +142,16 @@ export default class DisplayHandler extends React.Component {
   _Search = async (query, type) => {
     if (query && type) {
       try {
-        const _data = await SearchRequest(type, query);
+        const _response= await SearchRequest(query);
+
+        if(_response.status !="ok")
+        {
+          throw("Search Failes")
+        }
+        const _data = _response.data
+
         const filteredArray = _data.filter((obj) =>
-        obj.name ? obj.name.toLowerCase().includes(query.toLowerCase()):obj.album_name?obj.album_name.toLowerCase().includes(query.toLowerCase()):true
+         obj.title.toLowerCase().includes(query.toLowerCase())
         );
         this.setState({ result: _data, displayContent: filteredArray,type:type });
       } catch (error) {
@@ -169,6 +159,7 @@ export default class DisplayHandler extends React.Component {
       }
     }
   };
+
 
   onSearchOpen = () => {
     this.setState({ active: true });
@@ -179,21 +170,25 @@ export default class DisplayHandler extends React.Component {
   };
 
   render() {
+    if(this.state.active)
     return (
       <div className="my-16 p-2">
-        {this.state.active ? (
-          <SearchResult
-            result={this.state.displayContent}
-            onSearchClose={this.onSearchClose}
-            type={this.state.type}
-          />
-        ) : (
+      <SearchResult
+        result={this.state.displayContent}
+        onSearchClose={this.onSearchClose}
+        type={this.state.type}
+      />
+      </div>
+    )
+
+    else
+    return (
+      <div className="my-16 p-2">
           <div>
-            <Top10/>
+            {/* <Top10/> */}
             <RecentlyPlayed />
             <Playlist />
           </div>
-        )}
       </div>
     );
   }

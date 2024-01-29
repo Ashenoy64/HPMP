@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { PlaylistCard,PlaylistCardFollowed } from "./Card";
 import PlaylistDetails from "./PlaylistDetails";
-import { GetAllPlaylist,GetUserPlaylist } from "@/lib/utilites";
+import { GetAllPlaylist } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
 import { User } from "@/app/player/page";
 
@@ -25,9 +25,8 @@ export default function Playlist() {
       try {
         const _data = await GetAllPlaylist(uid);
 
-        setFollowed(_data.followed)
-        setPlaylist(_data.userPlaylist)
-
+        // setFollowed(_data.followed)
+        setPlaylist(_data.data)
 
 
       } catch (error) {
@@ -91,36 +90,19 @@ export default function Playlist() {
         />
       )}
       <div className="grid grid-flow-col justify-start w-full md:mx-8 gap-4 rounded-lg h-64 no-scrollbar overflow-x-auto">
-        {
-          followed && 
-          followed.map((val,ind)=>{
-            return (
-              <PlaylistCardFollowed
-              onClick={handleModalOpen}
-              key={ind}
-              primary={val.name}
-              imageBlob={val.image_blob}
-              secondary={val.username}
-              k={ind} 
-              id={val.playlist_id}
-              uid={uid}
-              />
-
-            )
-          })
-        }
         {userPlaylist &&
           userPlaylist.map((val, ind) => {
             return (
               <PlaylistCard
                 onClick={handleModalOpen}
                 key={ind}
-                primary={val.name}
-                imageBlob={val.image_blob}
+                primary={val.title}
+                imageBlob={val.image_url}
                 secondary={val.doc}
+                songs={val.songs}
                 k={ind}
-                id={val.playlist_id}
-                uid={val.owner_id}
+                id={val.id}
+                uid={val.user_id}
               />
             );
           })}
