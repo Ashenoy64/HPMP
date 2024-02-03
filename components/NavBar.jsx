@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-
+import { SessionRetrive,Logout, SessionStore } from "@/lib/utilites";
 
 export default function NavBar() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function NavBar() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        setUserName(user.email.split('@')[0])
+        setUserName(SessionRetrive("username"))
       }
     });
   }, []);
@@ -28,6 +28,19 @@ export default function NavBar() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prevState) => !prevState);
   };
+
+  const handleLogout = ()=>{
+    try{
+        SessionStore("accessToken",undefined)
+        SessionStore("username",undefined)
+        SessionStore("userif",undefined)
+        handleRoute('/login')
+    }
+    catch(error)
+    {
+      
+    }
+  }
 
   return (
     <div className="flex flex-row w-full justify-between p-2 items-center ">
@@ -52,15 +65,7 @@ export default function NavBar() {
           </button>
 
           <button
-            onClick={async () => {
-              signOut(auth)
-                .then(() => {
-                  console.log("signed out");
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            }}
+            onClick={handleLogout}
             className=" bg-neutral-800 w-24 h-8 rounded-md font-medium"
           >
             Sign Out

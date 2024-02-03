@@ -39,7 +39,9 @@ export default function confirm() {
       {
         Notify("Successfully Logged In")
         SessionStore("accessToken",response.token)
-        SessionStore("userid",response.user._id)
+        console.log(response)
+        SessionStore("userid",response.user_id)
+        SessionStore("username",response.user_name)
         Route('/player')
       }
       else{
@@ -48,6 +50,7 @@ export default function confirm() {
     }
     catch(error)
     {
+      // console.log(error)
       Notify("Something went wrong!")
     }
     setLoading(false)
