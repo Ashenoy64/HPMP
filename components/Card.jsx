@@ -11,7 +11,6 @@ export default function Card({
   onClick,
   uid,
   type,
-  id,
 }) {
   return (
     <div
@@ -169,52 +168,6 @@ export function PlaylistCard({
           Delete
         </button>
       )}
-    </div>
-  );
-}
-
-export function PodcastCard({
-  imageBlob,
-  primary,
-  secondary,
-  onClick,
-  k,
-  deleteHandler,
-}) {
-  
-  const [src, setSrc] = useState();
-  useEffect(() => {
-    if (imageBlob) {
-      setSrc(`data:image/jpeg;base64,${imageBlob}`);
-    } else {
-      setSrc("/playlistCover.jpg");
-    }
-  }, [imageBlob]);
-
-  useEffect;
-  return (
-    <div
-      className="flex flex-col  bg-neutral-800  rounded-lg w-40 h-56 transition-shadow hover:shadow-white hover:shadow-sm "
-      onClick={() => {
-        onClick(uid, type);
-      }}
-    >
-      <div className="w-32 h-32 object-contain m-auto">
-        <img src={src} className=" w-32 h-32" />
-      </div>
-      <div className="w-32 m-auto max-w-xs overflow-hidden">
-        <span className="font-semibold truncate">{primary}</span>
-        <p className="text-xs">{secondary}</p>
-      </div>
-      <button
-        className="p-2 rounded w-3/4 mx-auto my-2  bg-red-400 text-center"
-        onClick={(e) => {
-          e.stopPropagation();
-          deleteHandler(k);
-        }}
-      >
-        Delete
-      </button>
     </div>
   );
 }
