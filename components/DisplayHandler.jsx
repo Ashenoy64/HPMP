@@ -29,7 +29,7 @@ function SearchComp({ details,type }) {
         { isModalOpen ? <ViewerSong details={details} type={type} songID={details.id} onClose={handleModalClose}/> : "" }
         <div className="flex flex-row gap-4">
           <div className="object-contain w-16 h-16">
-            <ImageComponent blob={details.image_url} />
+            <ImageComponent url={details.image_url} />
           </div>
           <div className="flex flex-col">
             <span className="text-md overflow-hidden line-clamp-1">{details.title}</span>
