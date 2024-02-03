@@ -13,7 +13,6 @@ export default function Search() {
 
   const [active, setActive] = useState(true);
   const [filter, setFilter] = useState('track');
-  const [dropDown, setDropDown] = useState(false);
   const [query, setQuery] = useState('');
 
   const onChange = useCallback((event) => {
