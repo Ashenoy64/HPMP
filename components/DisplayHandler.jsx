@@ -5,31 +5,13 @@ import RecentlyPlayed from "./RecentlyPlayed";
 import Top10 from "@/components/Top10Songs";
 import {ViewerSong} from "./SongsToPlaylist";
 import ImageComponent from "./Image";
-import { SearchRequest,FollowPlaylist } from "@/lib/utilites";
+import { SearchRequest} from "@/lib/utilites";
 import { User } from "@/app/player/page";
-let _intance = null;
 
-function extractTestValue(inputString) {
-  try{
-    const match = inputString.match(/'([^']*)'/);
-
-    // Check if a match is found
-    if (match) {
-        return match[1];
-    } else {
-        return inputString;
-    }
-  }
-  catch(error)
-  {
-    return inputString
-  }
- 
-}  
 
 function SearchComp({ details,type }) {
   const [isModalOpen,setModalOpen] =  useState(false);
-  const {SongHandler,GetUserDetails,Notify} =  User()
+  const {SongHandler} =  User()
 
   function handleModalClose(e) {
       setModalOpen(false);
@@ -47,7 +29,7 @@ function SearchComp({ details,type }) {
         { isModalOpen ? <ViewerSong details={details} type={type} songID={details.id} onClose={handleModalClose}/> : "" }
         <div className="flex flex-row gap-4">
           <div className="object-contain w-16 h-16">
-            <ImageComponent blob={details.image_url} />
+            <ImageComponent url={details.image_url} />
           </div>
           <div className="flex flex-col">
             <span className="text-md overflow-hidden line-clamp-1">{details.title}</span>

@@ -1,52 +1,42 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { PlaylistCard,PlaylistCardFollowed } from "./Card";
+import { PlaylistCard } from "./Card";
 import PlaylistDetails from "./PlaylistDetails";
-import { GetAllPlaylist } from "@/lib/utilites";
+import { GetAllPlaylist, SessionRetrive } from "@/lib/utilites";
 import MakePlaylistModal from "./MakePlaylistModal";
 import { User } from "@/app/player/page";
 
-
-
 export default function Playlist() {
   const [isMakePlaylistOpen, setMakePlaylistModal] = useState(false);
-  const [data, setData] = useState(null);
-  const [followed, setFollowed] = useState(null);
   const [userPlaylist, setPlaylist] = useState(null);
   const [isModalOpen, setModal] = useState(false);
-  const [modalData,setModalData] =useState()
-  const [uid,setUID] = useState()
+  const [modalData, setModalData] = useState();
+  const [uid, setUID] = useState();
 
-  const {GetUserDetails} = User();
+  const { GetUserDetails } = User();
 
   useEffect(() => {
     const Playlist = async () => {
-      const uid = GetUserDetails().userID;
       try {
-        const _data = await GetAllPlaylist(uid);
-
-        // setFollowed(_data.followed)
-        setPlaylist(_data.data)
-
-
+        const token = SessionRetrive("accessToken");
+        if (!token) throw Error("Invalid token");
+        const _data = await GetAllPlaylist(token);
+        setPlaylist(_data.data);
       } catch (error) {
         console.log(error);
       }
     };
+
     const uid = GetUserDetails().userID;
-    if (uid) 
-    {
-      setUID(uid)
+    if (uid) {
+      setUID(uid);
       Playlist();
     }
   }, [GetUserDetails]);
 
-  function handleModalOpen(k,type) {
-    if(type=='playlist')
-      setModalData(userPlaylist[k]);
-    else
-      setModalData(followed[k])
-  
+  function handleModalOpen(k, type) {
+    setModalData(userPlaylist[k]);
+
     setModal(true);
   }
 

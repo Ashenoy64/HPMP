@@ -21,11 +21,9 @@ const UserContext = createContext();
 
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = useState(" ");
-  const [userID, setUserID] = useState("B1ypupFPJ7ff0aT2dYv7r4VDh2E2");
-  const [token, setToken] = useState(
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IjViNjAyZTBjYTFmNDdhOGViZmQxMTYwNGQ5Y2JmMDZmNGQ0NWY4MmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaHBtcC05YTc0NSIsImF1ZCI6ImhwbXAtOWE3NDUiLCJhdXRoX3RpbWUiOjE3MDY0MjIwODcsInVzZXJfaWQiOiJCMXlwdXBGUEo3ZmYwYVQyZFl2N3I0VkRoMkUyIiwic3ViIjoiQjF5cHVwRlBKN2ZmMGFUMmRZdjdyNFZEaDJFMiIsImlhdCI6MTcwNjQyMjA4NywiZXhwIjoxNzA2NDI1Njg3LCJlbWFpbCI6ImFzaGVub3k2NEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYXNoZW5veTY0QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.jxOw5_vzAAm2OYUOBdZnoYcWRjztfTmn1veJCoFTO0oje2YnV0YjH1JfgooqOyYD346_LqLdX12wltIr81_xkymR2KRwv7ypbP-QYn_YrX2GrI9Rge5F_deb1RLSMMT1aHmmEHvdt_ykhOOKxeFBX2BSNqIJs5w8C-saFusQvam3Y1eLYBnDd5mouVgaTunxX34FiGza6vV_5PSnN_0ZdGfnMBCcfPaQmsPFNasbwbl5Y1779CmDJHWUMPpfZwHf1kAjowS4Wb9Ii5atGLdA6lJYPADhBKhr97xI1nh_knqp2T0E28owXe667neg6CHDxaQ3Js3BBAoX-_zXS9VVww"
-  );
+  const [user, setUser] = useState("");
+  const [userID, setUserID] = useState("");
+  const [token, setToken] = useState("");
 
   const [songName, setSongName] = useState("");
   const [artist, setArtist] = useState("");
@@ -58,10 +56,12 @@ export default function Home() {
     const AuthenticateUser = async () => {
       try {
         const response = await ValidateUser(token);
-        console.log(response);
+        
         if (response.status == "ok") {
           Notify("Welcome " + response.data.email);
           setUser(response.data);
+          setToken(token)
+          setUserID(SessionRetrive("userid"))
 
         } else {
           Notify("Something went wrong");
@@ -73,7 +73,7 @@ export default function Home() {
       }
     };
 
-    // AuthenticateUser()
+    AuthenticateUser()
   }, []);
 
   useEffect(() => {

@@ -1,37 +1,52 @@
 "use client";
 import SideBar from "@/components/SideBar";
 import { useState, useEffect, createContext, useContext } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
-import { SessionRetrive } from "@/lib/utilites";
+import { SessionRetrive, ValidateUser } from "@/lib/utilites";
 const UserContext = createContext();
 
 export default function Layout({ children }) {
   const router = useRouter();
   const [user, setUser] = useState(" ");
-  const [userID, setUserID] = useState("B1ypupFPJ7ff0aT2dYv7r4VDh2E2");
+  const [userID, setUserID] = useState("");
+  const [token, setToken] = useState("");
   const [notice, setNotice] = useState("");
   const [noticeActive, setNoticeActive] = useState(false);
 
-  
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const id = SessionRetrive(user.email);
-        setUserID(id);
-        setUser(user);
-      } else {
-        router.push("/");
+    const token = SessionRetrive("accessToken");
+    if (!token) {
+      return router.push("/login");
+    }
+
+    const AuthenticateUser = async () => {
+      try {
+        const response = await ValidateUser(token);
+
+        if (response.status == "ok") {
+          Notify("Welcome " + response.data.email);
+          setUser(response.data);
+          setToken(token);
+          setUserID(SessionRetrive("userid"));
+        } else {
+          Notify("Something went wrong");
+          router.push("/login");
+        }
+      } catch (error) {
+        Notify("Something went wrong");
+        router.push("/login");
       }
-    });
+    };
+
+    AuthenticateUser();
   }, []);
 
   const GetUserDetails = () => {
     return {
       userID,
       user,
+      token,
     };
   };
 
@@ -61,13 +76,12 @@ export default function Layout({ children }) {
         </div>
       </UserContext.Provider>
     );
-  }
-  else{
-    return(
+  } else {
+    return (
       <div className="w-full h-screen flex flex-col justify-center items-center">
-        <Loading/>
+        <Loading />
       </div>
-    )
+    );
   }
 }
 
