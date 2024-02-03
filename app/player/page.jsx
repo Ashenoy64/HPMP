@@ -77,15 +77,15 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const UpdateRecentlyPlayed = async (userID, details) => {
+    const UpdateRecentlyPlayed = async (token, details) => {
       try {
-        const res = await SetRecentlyPlayed(userID, details);
+        const res = await SetRecentlyPlayed(token, details);
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (userID && details) UpdateRecentlyPlayed(userID, details);
+    if (userID && details) UpdateRecentlyPlayed(token, details);
   }, [trackID]);
 
   const GetUserDetails = () => {
