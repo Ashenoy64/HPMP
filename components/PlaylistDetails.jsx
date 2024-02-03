@@ -3,15 +3,6 @@ import React, { useState, useEffect } from "react";
 import { GetPlaylistInfo, GetSong } from "@/lib/utilites";
 import { User } from "@/app/player/page";
 
-function extractTestValue(inputString) {
-  const match = inputString.match(/'([^']*)'/);
-
-  if (match) {
-    return match[1];
-  } else {
-    return inputString;
-  }
-}
 
 function PlaylistSong({ id }) {
   const [imageSrc, setSrc] = useState();
@@ -60,7 +51,7 @@ function PlaylistSong({ id }) {
 
 export default function PlaylistDetails({ onClose, details }) {
   const [data, setData] = useState();
-  const { GetUserDetails, SetPlaylist } = User();
+  const { SetPlaylist } = User();
 
   useEffect(() => {
     const FetchData = async () => {
