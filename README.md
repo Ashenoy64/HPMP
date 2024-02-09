@@ -1,14 +1,6 @@
-# High-Performant Music Player
+# HPMP
 
-Welcome to the High-Performant Music Player project! This web application aims to provide you with a fast and enjoyable music listening experience.
-
-## Features
-
-- **High Performance**: We prioritize speed and efficiency to deliver a seamless music playback experience.
-
-- **User-Friendly**: The player is designed with ease of use in mind, ensuring a hassle-free music discovery and listening process.
-
-- **Library**: Access a vast music library with a diverse range of tracks and genres.
+Welcome to the HPMP a music player application! This web application aims to provide you with a fast and enjoyable music listening experience.
 
 ## Getting Started
 
