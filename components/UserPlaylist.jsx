@@ -118,7 +118,7 @@ function PlaylistSong({ id, playlist_id, uid }) {
   useEffect(() => {
     const FetchData = async () => {
       try {
-        const _data = await GetSong(id);
+        const _data = await GetSong(id,SessionRetrive('accessToken'));
         setData(_data.data);
       } catch (error) {
         console.log(error);

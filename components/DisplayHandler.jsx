@@ -2,10 +2,9 @@
 import React, { useState } from "react";
 import Playlist from "./Playlist";
 import RecentlyPlayed from "./RecentlyPlayed";
-import Top10 from "@/components/Top10Songs";
 import {ViewerSong} from "./SongsToPlaylist";
 import ImageComponent from "./Image";
-import { SearchRequest} from "@/lib/utilites";
+import { SearchRequest, SessionRetrive} from "@/lib/utilites";
 import { User } from "@/app/player/page";
 
 
@@ -91,6 +90,7 @@ export default class DisplayHandler extends React.Component {
       query: "",
       type: "",
       displayContent: [],
+      token :SessionRetrive('accessToken')
     };
 
     DisplayHandler._instance = this;
@@ -122,9 +122,10 @@ export default class DisplayHandler extends React.Component {
   };
 
   _Search = async (query, type) => {
+
     if (query && type) {
       try {
-        const _response= await SearchRequest(query);
+        const _response= await SearchRequest(query,this.state.token);
 
         if(_response.status !="ok")
         {

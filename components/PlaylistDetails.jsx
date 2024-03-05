@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { GetPlaylistInfo, GetSong } from "@/lib/utilites";
 import { User } from "@/app/player/page";
-
+import { SessionRetrive } from "@/lib/utilites";
 
 function PlaylistSong({ id }) {
   const [imageSrc, setSrc] = useState();
@@ -13,7 +13,7 @@ function PlaylistSong({ id }) {
   useEffect(() => {
     const FetchData = async () => {
       try {
-        const _data = await GetSong(id);
+        const _data = await GetSong(id,SessionRetrive('accessToken'));
         setData(_data.data);
       } catch (error) {
         console.log(error);
@@ -56,7 +56,7 @@ export default function PlaylistDetails({ onClose, details }) {
   useEffect(() => {
     const FetchData = async () => {
       try {
-        const _data = await GetPlaylistInfo(details.id);
+        const _data = await GetPlaylistInfo(details.id,SessionRetrive('accessToken'));
         setData(_data.data);
       } catch (error) {
         console.log(error);

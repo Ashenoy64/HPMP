@@ -48,19 +48,19 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const token = SessionRetrive("accessToken");
-    if (!token) {
+    const _token = SessionRetrive("accessToken");
+    if (!_token) {
       return router.push("/login");
     }
 
     const AuthenticateUser = async () => {
       try {
-        const response = await ValidateUser(token);
+        const response = await ValidateUser(_token);
         // console.log(response)
         if (response.status == "ok") {
           Notify("Welcome " + SessionRetrive("username"));
           setUser(response.user_id);
-          setToken(token)
+          setToken(_token)
           setUserID(SessionRetrive("userid"))
 
         } else {
@@ -114,7 +114,7 @@ export default function Home() {
 
   const GetPlaylistSong=async(id)=>{
     try{
-      const res = await GetSong(id);
+      const res = await GetSong(id,token);
       return UpdatePlayer(res.data)
     }
     catch(error){
