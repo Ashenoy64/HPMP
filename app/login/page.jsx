@@ -4,7 +4,7 @@ import React,{ useState } from "react";
 import { useRouter } from "next/navigation";
 import { SessionStore,UserLogin } from "@/lib/utilites";
 
-export default function confirm() {
+export default function Confirm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -96,7 +96,7 @@ export default function confirm() {
         <button type="submit" className="btn rounded-md bg-slate-600 font-bold text-white">
             {loading?<span className="loading text-warning loading-infinity loading-lg"></span>:"Login"}
         </button>
-        <div className="w-full text-center text-sm hover:underline" onClick={()=>Route('/')}>Don't have an Account?</div>
+        <div className="w-full text-center text-sm hover:underline" onClick={()=>Route('/')}>Don&apos;t have an Account?</div>
       </form>
     </div>
     

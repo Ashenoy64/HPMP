@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { UserSignup } from "@/lib/utilites";
 
 
-export default function landing() {
+export default function Landing() {
   const router = useRouter();
 
   const [notice, setNotice] = useState("");
