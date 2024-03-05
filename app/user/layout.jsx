@@ -25,8 +25,8 @@ export default function Layout({ children }) {
         const response = await ValidateUser(token);
 
         if (response.status == "ok") {
-          Notify("Welcome " + response.data.email);
-          setUser(response.data);
+          
+          setUser(response.user_id);
           setToken(token);
           setUserID(SessionRetrive("userid"));
         } else {

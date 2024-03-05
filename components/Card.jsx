@@ -20,7 +20,7 @@ export function RecentlyPlayedCard({
       }}
     >
       <div className="w-32 h-32 object-contain m-auto">
-        <img src={imageBlob} alt="Image" />
+        <img src={imageUrl} alt="Image" />
       </div>
       <div className="w-32 m-auto over">
         <p className="font-semibold truncate">{primary}</p>

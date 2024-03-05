@@ -56,10 +56,10 @@ export default function Home() {
     const AuthenticateUser = async () => {
       try {
         const response = await ValidateUser(token);
-        
+        // console.log(response)
         if (response.status == "ok") {
-          Notify("Welcome " + response.data.email);
-          setUser(response.data);
+          Notify("Welcome " + SessionRetrive("username"));
+          setUser(response.user_id);
           setToken(token)
           setUserID(SessionRetrive("userid"))
 
@@ -77,15 +77,15 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const UpdateRecentlyPlayed = async (userID, details) => {
+    const UpdateRecentlyPlayed = async (token, details) => {
       try {
-        const res = await SetRecentlyPlayed(userID, details);
+        const res = await SetRecentlyPlayed(token, details);
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (userID && details) UpdateRecentlyPlayed(userID, details);
+    if (userID && details) UpdateRecentlyPlayed(token, details);
   }, [trackID]);
 
   const GetUserDetails = () => {
