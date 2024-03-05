@@ -56,7 +56,7 @@ export default function Home() {
     const AuthenticateUser = async () => {
       try {
         const response = await ValidateUser(token);
-        console.log(response)
+        // console.log(response)
         if (response.status == "ok") {
           Notify("Welcome " + SessionRetrive("username"));
           setUser(response.user_id);

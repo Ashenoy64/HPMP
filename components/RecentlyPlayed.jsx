@@ -15,8 +15,8 @@ export default function RecentlyPlayed() {
       try {
         const token = SessionRetrive("accessToken");
         if (!token) throw Error("Invalid token");
-        const arr = await GetRecentlyPlayed(token);
-
+        const data = await GetRecentlyPlayed(token);
+        const arr = data.data
         arr.reverse();
         setData(arr);
       } catch (error) {
