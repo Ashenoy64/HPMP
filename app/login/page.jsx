@@ -99,7 +99,5 @@ export default function Confirm() {
         <div className="w-full text-center text-sm hover:underline" onClick={()=>Route('/')}>Don&apos;t have an Account?</div>
       </form>
     </div>
-    
-    
   );
 }
