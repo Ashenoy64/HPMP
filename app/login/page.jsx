@@ -56,10 +56,6 @@ export default function Confirm() {
     setLoading(false)
   };
 
-  
-
-
-//    return the GUI
   return (
     <div className=" flex flex-col items-center justify-center h-screen">
       
